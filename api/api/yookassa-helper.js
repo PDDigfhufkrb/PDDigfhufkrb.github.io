@@ -1,8 +1,6 @@
-const YooKassa = require('yookassa');
-
-// Функция будет использовать ключи из переменных окружения
+// Пока временная заглушка - функция будет работать без реального SDK
 async function createYooKassaPayment(productId, email) {
-  // Пока заглушка - здесь будет реальная логика
+  // Временная заглушка для тестирования
   return {
     id: 'test_payment_' + Date.now(),
     confirmation: {
