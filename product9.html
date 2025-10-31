@@ -118,10 +118,31 @@
         </div>
     </footer>
 
-    <script>
-        function buyProduct() {
-            alert('Кнопка покупки работает! Здесь будет интеграция с ЮKassой.');
+   <script>
+async function buyProduct() {
+    try {
+        const response = await fetch('https://YOUR-DOMAIN.vercel.app/api/create-payment', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                product_id: 9,
+                product_name: 'Начало движения',
+                price: 99,
+                email: 'customer@example.com'
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            window.location.href = result.payment_url;
+        } else {
+            alert('Ошибка: ' + result.error);
         }
-    </script>
+    } catch (error) {
+        alert('Ошибка соединения');
+    }
+}
+</script>
 </body>
 </html>
