@@ -1,6 +1,6 @@
-// Пока временная заглушка - функция будет работать без реального SDK
 async function createYooKassaPayment(productId, email) {
   // Временная заглушка для тестирования
+  // Позже заменим на реальные HTTP запросы к API ЮKassы
   return {
     id: 'test_payment_' + Date.now(),
     confirmation: {
