@@ -2,6 +2,6 @@
   "name": "pdd-shop-api",
   "version": "1.0.0",
   "dependencies": {
-    "yookassa": "^3.0.0"
+    "@yookassa/nodejs-sdk": "^3.0.0"
   }
 }
