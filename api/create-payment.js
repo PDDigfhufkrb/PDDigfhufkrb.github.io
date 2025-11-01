@@ -8,6 +8,8 @@ module.exports = async (req, res) => {
   try {
     const { product_id, product_name, price, email } = req.body;
 
+    console.log('Создаем платеж для:', { product_id, product_name, price });
+
     // Реальный запрос к ЮKasse
     const response = await fetch('https://api.yookassa.ru/v3/payments', {
       method: 'POST',
@@ -29,6 +31,7 @@ module.exports = async (req, res) => {
     });
 
     const payment = await response.json();
+    console.log('Ответ ЮKassы:', payment);
     
     if (payment.confirmation && payment.confirmation.confirmation_url) {
       res.status(200).json({
@@ -43,6 +46,7 @@ module.exports = async (req, res) => {
     }
 
   } catch (error) {
+    console.error('Ошибка:', error);
     res.status(500).json({
       success: false,
       error: 'Ошибка соединения с платежной системой'
