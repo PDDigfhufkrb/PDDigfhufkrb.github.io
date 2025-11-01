@@ -17,10 +17,11 @@
             padding: 15px 30px;
             font-size: 1.2rem;
         }
-        .preview-img {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            max-width: 100%;
+        .feature-list li {
+            margin-bottom: 0.5rem;
+        }
+        .loading {
+            display: none;
         }
     </style>
 </head>
@@ -46,12 +47,12 @@
                 
                 <div class="mb-4">
                     <h4>📖 Что внутри шпаргалки?</h4>
-                    <ul>
-                        <li><strong>Простое объяснение 15+ терминов</strong> - "Уступить дорогу", "Главная дорога", "Препятствие" и других</li>
-                        <li><strong>Четкие отличия</strong> - чем "обгон" отличается от "опережения", "остановка" от "стоянки"</li>
-                        <li><strong>Наглядные примеры</strong> - как определить границы перекрестка, что считается прилегающей территорией</li>
-                        <li><strong>Алгоритмы быстрого запоминания</strong> - мнемонические правила и аналогии</li>
-                        <li><strong>Таблица-памятка</strong> - все основные понятия на одной странице</li>
+                    <ul class="feature-list">
+                        <li>✅ <strong>Простое объяснение 15+ терминов</strong> - "Уступить дорогу", "Главная дорога", "Препятствие" и других</li>
+                        <li>✅ <strong>Четкие отличия</strong> - чем "обгон" отличается от "опережения", "остановка" от "стоянки"</li>
+                        <li>✅ <strong>Наглядные примеры</strong> - как определить границы перекрестка, что считается прилегающей территорией</li>
+                        <li>✅ <strong>Алгоритмы быстрого запоминания</strong> - мнемонические правила и аналогии</li>
+                        <li>✅ <strong>Таблица-памятка</strong> - все основные понятия на одной странице</li>
                     </ul>
                 </div>
 
@@ -64,16 +65,28 @@
             <div class="col-lg-4">
                 <div class="card shadow">
                     <div class="card-body text-center">
-                    
-                        
                         <div class="mb-3">
                             <span class="h3 text-primary">99 ₽</span>
                         </div>
                         
+                        <!-- Форма для email -->
+                        <div class="mb-3">
+                            <input type="email" id="emailInput" class="form-control" placeholder="Ваш email для доступа" required>
+                            <small class="text-muted">На этот email придет ссылка на скачивание</small>
+                        </div>
+                        
                         <!-- Кнопка покупки -->
-                        <button class="btn btn-buy btn-lg w-100 mb-3" onclick="buyProduct()">
+                        <button class="btn btn-buy btn-lg w-100 mb-3" onclick="initPayment()" id="buyButton">
                             🛒 Купить эту шпаргалку
                         </button>
+
+                        <!-- Индикатор загрузки -->
+                        <div class="loading" id="loadingIndicator">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
+                            <p class="mt-2">Перенаправляем в платежную систему...</p>
+                        </div>
                         
                         <small class="text-muted">
                             ✅ Мгновенная доставка<br>
@@ -85,12 +98,23 @@
 
                 <div class="card mt-3">
                     <div class="card-body">
+                        <h6>📊 Кому необходима эта шпаргалка?</h6>
+                        <ul class="small mb-0">
+                            <li>Начинающим водителям</li>
+                            <li>Тем, кто готовится к экзамену</li>
+                            <li>Водителям со стажем для повторения</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-body">
                         <h6>🔄 Как это работает?</h6>
                         <ol class="small">
+                            <li>Вводите email</li>
                             <li>Нажимаете "Купить"</li>
-                            <li>Оплачиваете через ЮMoney</li>
+                            <li>Оплачиваете через ЮKassу</li>
                             <li>Сразу получаете PDF-файл</li>
-                            <li>Изучаете за 15 минут</li>
                         </ol>
                     </div>
                 </div>
@@ -106,16 +130,60 @@
         </div>
     </footer>
 
-   <script>
-async function buyProduct() {
-    const wallet = '4100119395590542; 
-    window.location.href = `https://yoomoney.ru/quickpay/confirm.xml?` +
-        `receiver=${wallet}` +
-        `&quickpay-form=shop` +
-        `&targets=Шпаргалка ПДД: Основные понятия` +
-        `&sum=99` +
-        `&label=order_${Date.now()}`;
-}
-</script>
+    <script>
+        async function initPayment() {
+            const emailInput = document.getElementById('emailInput');
+            const buyButton = document.getElementById('buyButton');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            // Проверка email
+            if (!emailInput.value || !emailInput.value.includes('@')) {
+                alert('Пожалуйста, введите корректный email адрес');
+                return;
+            }
+
+            // Показываем загрузку
+            buyButton.style.display = 'none';
+            loadingIndicator.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/payment/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_id: 1,
+                        price: 99,
+                        email: emailInput.value
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Перенаправляем на страницу оплаты ЮKassa
+                    window.location.href = data.payment_url;
+                } else {
+                    alert('Ошибка: ' + data.error);
+                    // Возвращаем кнопку
+                    buyButton.style.display = 'block';
+                    loadingIndicator.style.display = 'none';
+                }
+            } catch (error) {
+                alert('Ошибка сети. Проверьте соединение и попробуйте снова.');
+                // Возвращаем кнопку
+                buyButton.style.display = 'block';
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // Разрешаем нажать Enter в поле email
+        document.getElementById('emailInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                initPayment();
+            }
+        });
+    </script>
 </body>
 </html>
