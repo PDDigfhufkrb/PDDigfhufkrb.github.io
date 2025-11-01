@@ -8,28 +8,25 @@ module.exports = async (req, res) => {
   try {
     const { product_id, product_name, price, email } = req.body;
 
-    // Проверяем что переменные окружения загружены
-    if (!process.env.SHOP_ID || !process.env.SECRET_KEY) {
-      throw new Error('Не настроены переменные окружения');
-    }
+    // ВСТАВЬ СЮДА СВОИ РЕАЛЬНЫЕ ДАННЫЕ
+    const SHOP_ID = '123456'; // замени на свой ShopID
+    const SECRET_KEY = 'live_xxxxxxx'; // замени на свой ключ
 
-    const authString = process.env.SHOP_ID + ':' + process.env.SECRET_KEY;
+    const authString = SHOP_ID + ':' + SECRET_KEY;
     const authBase64 = Buffer.from(authString).toString('base64');
 
     const paymentData = {
       amount: {
-        value: price.toFixed(2),
+        value: '99.00', // фиксированная цена
         currency: "RUB"
       },
       capture: true,
       confirmation: {
-        type: "redirect",
+        type: "redirect", 
         return_url: "https://pddigfhufkrb.github.io/index.html"
       },
       description: `Шпаргалка ПДД: ${product_name}`
     };
-
-    console.log('Отправляем запрос к ЮKasse:', JSON.stringify(paymentData));
 
     const response = await fetch('https://api.yookassa.ru/v3/payments', {
       method: 'POST',
@@ -41,28 +38,24 @@ module.exports = async (req, res) => {
       body: JSON.stringify(paymentData)
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP ${response.status}: ${errorText}`);
-    }
-
     const payment = await response.json();
-    console.log('Ответ ЮKassы:', payment);
-
+    
     if (payment.confirmation?.confirmation_url) {
       res.json({
         success: true,
         payment_url: payment.confirmation.confirmation_url
       });
     } else {
-      throw new Error('Нет ссылки для оплаты в ответе');
+      res.status(500).json({
+        success: false,
+        error: 'Ошибка: ' + (payment.description || 'Неизвестная ошибка')
+      });
     }
 
   } catch (error) {
-    console.error('Ошибка:', error);
     res.status(500).json({
-      success: false,
-      error: error.message
+      success: false, 
+      error: 'Ошибка сервера'
     });
   }
 };
