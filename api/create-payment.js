@@ -8,30 +8,35 @@ module.exports = async (req, res) => {
   try {
     const { product_id, product_name, price, email } = req.body;
 
-    console.log('Создаем платеж для:', { product_id, product_name, price });
+    // Создаем базовую авторизацию
+    const auth = Buffer.from(process.env.SHOP_ID + ':' + process.env.SECRET_KEY).toString('base64');
 
-    // Реальный запрос к ЮKasse
     const response = await fetch('https://api.yookassa.ru/v3/payments', {
       method: 'POST',
       headers: {
-        'Authorization': 'Basic ' + Buffer.from(process.env.SHOP_ID + ':' + process.env.SECRET_KEY).toString('base64'),
+        'Authorization': 'Basic ' + auth,
         'Content-Type': 'application/json',
         'Idempotence-Key': Date.now().toString()
       },
       body: JSON.stringify({
-        amount: { value: price, currency: 'RUB' },
+        amount: { 
+          value: price.toString(), 
+          currency: 'RUB' 
+        },
         capture: true,
         confirmation: { 
           type: 'redirect', 
           return_url: 'https://pddigfhufkrb.github.io/index.html' 
         },
-        description: product_name,
-        metadata: { product_id, email }
+        description: `Шпаргалка: ${product_name}`,
+        metadata: { 
+          product_id: product_id.toString(),
+          email: email 
+        }
       })
     });
 
     const payment = await response.json();
-    console.log('Ответ ЮKassы:', payment);
     
     if (payment.confirmation && payment.confirmation.confirmation_url) {
       res.status(200).json({
@@ -41,15 +46,14 @@ module.exports = async (req, res) => {
     } else {
       res.status(500).json({
         success: false,
-        error: 'Не удалось создать платеж: ' + (payment.description || 'Unknown error')
+        error: 'Ошибка ЮKassы: ' + (payment.description || JSON.stringify(payment))
       });
     }
 
   } catch (error) {
-    console.error('Ошибка:', error);
     res.status(500).json({
       success: false,
-      error: 'Ошибка соединения с платежной системой'
+      error: 'Ошибка сервера: ' + error.message
     });
   }
 };
