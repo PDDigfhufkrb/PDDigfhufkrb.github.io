@@ -147,62 +147,48 @@
             loadingIndicator.style.display = 'block';
 
             try {
-                // Пробуем разные пути к API
-                const apiPaths = [
-                    '/api/payment/create',
-                    '/api/create-payment',
-                    'https://your-domain.vercel.app/api/payment/create'
-                ];
+                console.log('🔄 Отправляем запрос к API...');
+                
+                const response = await fetch('/api/create-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_id: 1,
+                        price: 99,
+                        email: emailInput.value
+                    })
+                });
 
-                let response;
-                let lastError;
+                console.log('📨 Ответ от API:', response.status);
 
-                for (const apiPath of apiPaths) {
-                    try {
-                        console.log('Пробуем путь:', apiPath);
-                        response = await fetch(apiPath, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                product_id: 1,
-                                price: 99,
-                                email: emailInput.value
-                            })
-                        });
-                        
-                        if (response.ok) break;
-                        
-                    } catch (error) {
-                        lastError = error;
-                        console.log('Ошибка для пути', apiPath, error);
-                        continue;
-                    }
-                }
-
-                if (!response || !response.ok) {
-                    throw new Error(lastError || 'API не отвечает');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                console.log('Ответ от API:', data);
+                console.log('✅ Данные от API:', data);
                 
                 if (data.success) {
+                    console.log('🔗 Переходим по ссылке:', data.payment_url);
                     window.location.href = data.payment_url;
                 } else {
-                    alert('Ошибка платежа: ' + (data.error || 'неизвестная ошибка'));
+                    alert('Ошибка: ' + (data.error || 'неизвестная ошибка'));
+                    // Возвращаем кнопку
                     buyButton.style.display = 'block';
                     loadingIndicator.style.display = 'none';
                 }
             } catch (error) {
-                console.error('Полная ошибка:', error);
-                alert('Ошибка соединения. Проверьте:\n1. Файл API создан в папке /api/payment/create.js\n2. Переменные окружения в Vercel\n3. Домен в SITE_URL');
+                console.error('❌ Полная ошибка:', error);
+                alert('Ошибка соединения с сервером. Проверьте консоль для деталей.');
+                // Возвращаем кнопку
                 buyButton.style.display = 'block';
                 loadingIndicator.style.display = 'none';
             }
         }
 
+        // Разрешаем нажать Enter в поле email
         document.getElementById('emailInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 initPayment();
