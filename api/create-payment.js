@@ -1,7 +1,7 @@
 async function buyProduct() {
     // ТЕСТОВЫЙ РЕЖИМ - безопасно
-    const shopId = '123456'; // твой ShopID
-    const secretKey = 'test_...'; // тестовый ключ из ЮKassы
+    const shopId = 1194993
+    const secretKey = live_EAcy_r8neVGb-LNXurdOewhNzT6TfCt-g59XV8lZR6w
     
     const auth = btoa(shopId + ':' + secretKey);
     
