@@ -1,7 +1,0 @@
-твой-сайт/
-├── netlify/
-│   └── functions/
-│       └── create-payment.js
-├── index.html
-├── product1.html
-└── и т.д.
