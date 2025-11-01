@@ -13,9 +13,6 @@ module.exports = async (req, res) => {
       throw new Error('Не настроены переменные окружения');
     }
 
-    console.log('ShopID:', process.env.SHOP_ID);
-    console.log('Secret Key starts with:', process.env.SECRET_KEY.substring(0, 10) + '...');
-
     const authString = process.env.SHOP_ID + ':' + process.env.SECRET_KEY;
     const authBase64 = Buffer.from(authString).toString('base64');
 
