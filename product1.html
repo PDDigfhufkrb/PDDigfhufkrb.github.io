@@ -147,38 +147,62 @@
             loadingIndicator.style.display = 'block';
 
             try {
-                const response = await fetch('/api/payment/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        product_id: 1,
-                        price: 99,
-                        email: emailInput.value
-                    })
-                });
+                // Пробуем разные пути к API
+                const apiPaths = [
+                    '/api/payment/create',
+                    '/api/create-payment',
+                    'https://your-domain.vercel.app/api/payment/create'
+                ];
+
+                let response;
+                let lastError;
+
+                for (const apiPath of apiPaths) {
+                    try {
+                        console.log('Пробуем путь:', apiPath);
+                        response = await fetch(apiPath, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                product_id: 1,
+                                price: 99,
+                                email: emailInput.value
+                            })
+                        });
+                        
+                        if (response.ok) break;
+                        
+                    } catch (error) {
+                        lastError = error;
+                        console.log('Ошибка для пути', apiPath, error);
+                        continue;
+                    }
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error(lastError || 'API не отвечает');
+                }
 
                 const data = await response.json();
+                console.log('Ответ от API:', data);
                 
                 if (data.success) {
-                    // Перенаправляем на страницу оплаты ЮKassa
                     window.location.href = data.payment_url;
                 } else {
-                    alert('Ошибка: ' + data.error);
-                    // Возвращаем кнопку
+                    alert('Ошибка платежа: ' + (data.error || 'неизвестная ошибка'));
                     buyButton.style.display = 'block';
                     loadingIndicator.style.display = 'none';
                 }
             } catch (error) {
-                alert('Ошибка сети. Проверьте соединение и попробуйте снова.');
-                // Возвращаем кнопку
+                console.error('Полная ошибка:', error);
+                alert('Ошибка соединения. Проверьте:\n1. Файл API создан в папке /api/payment/create.js\n2. Переменные окружения в Vercel\n3. Домен в SITE_URL');
                 buyButton.style.display = 'block';
                 loadingIndicator.style.display = 'none';
             }
         }
 
-        // Разрешаем нажать Enter в поле email
         document.getElementById('emailInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 initPayment();
