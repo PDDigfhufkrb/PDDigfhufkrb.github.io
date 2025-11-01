@@ -1,8 +1,5 @@
 {
-  "name": "pdd-shpargalki",
+  "name": "pdd-shpargalki", 
   "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "yookassa": "^2.4.0"
-  }
+  "type": "module"
 }
