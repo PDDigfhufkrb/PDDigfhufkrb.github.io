@@ -1,1 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата прошла успешно - ПДД Шпаргалки</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .success-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="success-card p-5 text-center">
+                    <!-- Иконка успеха -->
+                    <div class="mb-4">
+                        <div style="font-size: 4rem;">🎉</div>
+                    </div>
+                    
+                    <!-- Заголовок -->
+                    <h1 class="text-success mb-3">Оплата прошла успешно!</h1>
+                    <p class="lead mb-4">Спасибо за покупку! Ваша шпаргалка готова к скачиванию.</p>
+                    
+                    <!-- Кнопка скачивания -->
+                    <div class="mb-4">
+                        <a href="#" id="downloadLink" class="btn btn-primary btn-lg py-3 px-4">
+                            📥 СКАЧАТЬ ШПАРГАЛКУ
+                        </a>
+                    </div>
+                    
+                    <!-- Информация -->
+                    <div class="alert alert-info">
+                        <strong>📧 Файл также отправлен на вашу почту</strong><br>
+                        Ссылка действительна в течение 24 часов
+                    </div>
+                    
+                    <!-- Дополнительные действия -->
+                    <div class="mt-4">
+                        <a href="index.html" class="btn btn-outline-secondary me-2">
+                            ← Все шпаргалки
+                        </a>
+                        <a href="#" class="btn btn-outline-primary">
+                            📞 Поддержка
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Определяем какую шпаргалку скачивать по URL параметрам
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('product') || '1';
+        
+        // Обновляем ссылку скачивания
+        const downloadLink = document.getElementById('downloadLink');
+        downloadLink.href = `/downloads/shpargalka-${productId}.pdf`;
+        downloadLink.download = `ПДД_Шпаргалка_${productId}.pdf`;
+        
+        // Можно добавить автоматическое скачивание
+        // setTimeout(() => downloadLink.click(), 2000);
+    </script>
+</body>
+</html>
