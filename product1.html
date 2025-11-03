@@ -17,11 +17,13 @@
             padding: 15px 30px;
             font-size: 1.2rem;
         }
+        .preview-img {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 100%;
+        }
         .feature-list li {
             margin-bottom: 0.5rem;
-        }
-        .loading {
-            display: none;
         }
     </style>
 </head>
@@ -69,24 +71,10 @@
                             <span class="h3 text-primary">99 ₽</span>
                         </div>
                         
-                        <!-- Форма для email -->
-                        <div class="mb-3">
-                            <input type="email" id="emailInput" class="form-control" placeholder="Ваш email для доступа" required>
-                            <small class="text-muted">На этот email придет ссылка на скачивание</small>
-                        </div>
-                        
                         <!-- Кнопка покупки -->
-                        <button class="btn btn-buy btn-lg w-100 mb-3" onclick="initPayment()" id="buyButton">
+                        <button class="btn btn-buy btn-lg w-100 mb-3" onclick="buyProduct()">
                             🛒 Купить эту шпаргалку
                         </button>
-
-                        <!-- Индикатор загрузки -->
-                        <div class="loading" id="loadingIndicator">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Загрузка...</span>
-                            </div>
-                            <p class="mt-2">Перенаправляем в платежную систему...</p>
-                        </div>
                         
                         <small class="text-muted">
                             ✅ Мгновенная доставка<br>
@@ -102,7 +90,7 @@
                         <ul class="small mb-0">
                             <li>Начинающим водителям</li>
                             <li>Тем, кто готовится к экзамену</li>
-                            <li>Водителям со стажем для повторения</li>
+                            <li>Всем для повторения правил</li>
                         </ul>
                     </div>
                 </div>
@@ -111,7 +99,6 @@
                     <div class="card-body">
                         <h6>🔄 Как это работает?</h6>
                         <ol class="small">
-                            <li>Вводите email</li>
                             <li>Нажимаете "Купить"</li>
                             <li>Оплачиваете через ЮKassу</li>
                             <li>Сразу получаете PDF-файл</li>
@@ -131,69 +118,42 @@
     </footer>
 
     <script>
-        async function initPayment() {
-            const emailInput = document.getElementById('emailInput');
-            const buyButton = document.getElementById('buyButton');
-            const loadingIndicator = document.getElementById('loadingIndicator');
-
-            // Проверка email
-            if (!emailInput.value || !emailInput.value.includes('@')) {
-                alert('Пожалуйста, введите корректный email адрес');
-                return;
-            }
-
-            // Показываем загрузку
-            buyButton.style.display = 'none';
-            loadingIndicator.style.display = 'block';
-
+        async function buyProduct() {
+            const buyButton = event.target;
+            const originalText = buyButton.textContent;
+            
             try {
-                console.log('🔄 Отправляем запрос к API...');
-                
+                buyButton.textContent = 'Подождите...';
+                buyButton.disabled = true;
+
+                const productData = {
+                    productId: 'product1',
+                    productName: 'Основные понятия ПДД',
+                    price: 99
+                };
+
                 const response = await fetch('/api/create-payment', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        product_id: 1,
-                        price: 99,
-                        email: emailInput.value
-                    })
+                    body: JSON.stringify(productData)
                 });
 
-                console.log('📨 Ответ от API:', response.status);
+                const result = await response.json();
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('✅ Данные от API:', data);
-                
-                if (data.success) {
-                    console.log('🔗 Переходим по ссылке:', data.payment_url);
-                    window.location.href = data.payment_url;
+                if (result.success) {
+                    window.location.href = result.confirmation_url;
                 } else {
-                    alert('Ошибка: ' + (data.error || 'неизвестная ошибка'));
-                    // Возвращаем кнопку
-                    buyButton.style.display = 'block';
-                    loadingIndicator.style.display = 'none';
+                    alert('Ошибка: ' + result.error);
                 }
             } catch (error) {
-                console.error('❌ Полная ошибка:', error);
-                alert('Ошибка соединения с сервером. Проверьте консоль для деталей.');
-                // Возвращаем кнопку
-                buyButton.style.display = 'block';
-                loadingIndicator.style.display = 'none';
+                alert('Ошибка соединения с сервером');
+            } finally {
+                buyButton.textContent = originalText;
+                buyButton.disabled = false;
             }
         }
-
-        // Разрешаем нажать Enter в поле email
-        document.getElementById('emailInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                initPayment();
-            }
-        });
     </script>
 </body>
 </html>
