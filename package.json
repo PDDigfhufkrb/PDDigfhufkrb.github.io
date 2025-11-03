@@ -1,0 +1,8 @@
+{
+  "name": "pdd-shop",
+  "version": "1.0.0",
+  "description": "PDD Шпаргалки магазин",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
