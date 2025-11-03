@@ -66,19 +66,19 @@
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('product') || 'product1';
             
-            // Создаем ссылки на твои PDF файлы
+            // Реальные ссылки на PDF
             const pdfFiles = {
-                'product1': 'https://ваша-ссылка-на-pdf/основные-понятия.pdf',
-                'product2': 'https://ваша-ссылка-на-pdf/обгон-опережение.pdf',
-                'product3': 'https://ваша-ссылка-на-pdf/остановка-стоянка.pdf',
-                'product4': 'https://ваша-ссылка-на-pdf/проезд-перекрестков.pdf',
-                'product5': 'https://ваша-ссылка-на-pdf/скоростной-режим.pdf',
-                'product6': 'https://ваша-ссылка-на-pdf/действия-при-дтп.pdf',
-                'product7': 'https://ваша-ссылка-на-pdf/световые-сигналы.pdf',
-                'product8': 'https://ваша-ссылка-на-pdf/пешеходные-переходы.pdf',
-                'product9': 'https://ваша-ссылка-на-pdf/начало-движения.pdf',
-                'product10': 'https://ваша-ссылка-на-pdf/железнодорожные-переезды.pdf',
-                'product11': 'https://ваша-ссылка-на-pdf/обязанности-водителя.pdf'
+                'product1': 'https://drive.google.com/file/d/1kYFSr6S_DGIE74yMo0v8EJMbH__r3O6D/view?usp=sharing',
+                'product2': 'https://drive.google.com/file/d/1GoBl8agPglK6Y0MbYubxueeYqLCOU2Ze/view?usp=sharing',
+                'product3': 'https://drive.google.com/file/d/1rhj9CIUO0TMuL0546bpgQSJQFeWRFs4s/view?usp=sharing',
+                'product4': 'https://drive.google.com/file/d/1Hh4sdwf9Mc1BL6cErskcQ2_Xi46w02Ri/view?usp=sharing',
+                'product5': 'https://drive.google.com/file/d/1W2VYr-yRUfeBCCLoLSvRIdxFcGG0GN9B/view?usp=sharing',
+                'product6': 'https://drive.google.com/file/d/1gDCXI0B0wE9UI7MOb0MSE1dRPzZ4QQrc/view?usp=sharing',
+                'product7': 'https://drive.google.com/file/d/12hShwoi5-5VVij3PPpu6WZdC_F2g3eqe/view?usp=sharing',
+                'product8': 'https://drive.google.com/file/d/18nWk92JVQTWx9UMWGysQQVhAYT38fnZk/view?usp=sharing',
+                'product9': 'https://drive.google.com/file/d/1-NXen5DEx00KKXCS2w8d3z0j-GAeCVRI/view?usp=sharing',
+                'product10': 'https://drive.google.com/file/d/1PyAOC7ZanERh22lcO49wuT1saouBCxXe/view?usp=sharing',
+                'product11': 'https://drive.google.com/file/d/1mNqgnOAnJFx69KMut87MMfxbjNPfZcDN/view?usp=sharing'
             };
 
             const pdfUrl = pdfFiles[productId];
@@ -87,7 +87,7 @@
                 // Открываем PDF в новой вкладке
                 window.open(pdfUrl, '_blank');
             } else {
-                alert('Файл не найден. Свяжитесь с поддержкой.');
+                alert('Файл не найден. Свяжитесь с поддержкой: example@pdd.ru');
             }
         }
 
