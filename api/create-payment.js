@@ -1,21 +1,35 @@
-const YooKassa = require('yookassa');
+const fetch = require('node-fetch');
 
-export default async function handler(req, res) {
-  // Разрешаем только POST запросы
+module.exports = async (req, res) => {
+  // Разрешаем CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Обрабатываем preflight запрос
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // Проверяем метод
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    // Получаем переменные окружения
-    const { SHOP_ID, SECRET_KEY, SITE_URL } = process.env;
-    
-    // Проверяем наличие переменных
+    const { productId, productName, price } = req.body;
+
+    // Получаем ключи из environment variables
+    const SHOP_ID = process.env.SHOP_ID;
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const SITE_URL = process.env.SITE_URL;
+
+    // Проверяем наличие обязательных переменных
     if (!SHOP_ID || !SECRET_KEY || !SITE_URL) {
       console.error('Missing environment variables:', {
-        SHOP_ID: SHOP_ID ? 'set' : 'missing',
-        SECRET_KEY: SECRET_KEY ? 'set' : 'missing',
-        SITE_URL: SITE_URL ? 'set' : 'missing'
+        SHOP_ID: !!SHOP_ID,
+        SECRET_KEY: !!SECRET_KEY,
+        SITE_URL: !!SITE_URL
       });
       return res.status(500).json({ 
         error: 'Server configuration error',
@@ -23,52 +37,71 @@ export default async function handler(req, res) {
       });
     }
 
-    const { amount, description, productId } = req.body;
+    // Формируем данные для платежа по шаблону ЮKassa
+    const paymentData = {
+      amount: {
+        value: price.toFixed(2),
+        currency: "RUB"
+      },
+      capture: true,
+      confirmation: {
+        type: "redirect",
+        return_url: `${SITE_URL}/success.html?product=${productId}`
+      },
+      description: productName
+    };
 
-    // Валидация входных данных
-    if (!amount || !description) {
-      return res.status(400).json({ 
-        error: 'Missing required fields: amount, description' 
-      });
+    console.log('Creating payment with data:', {
+      amount: paymentData.amount,
+      description: paymentData.description
+    });
+
+    // Создаем уникальный ключ идемпотентности
+    const idempotenceKey = `key-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+    // Отправляем запрос к API ЮKassa
+    const response = await fetch('https://api.yookassa.ru/v3/payments', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + Buffer.from(SHOP_ID + ':' + SECRET_KEY).toString('base64'),
+        'Idempotence-Key': idempotenceKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(paymentData)
+    });
+
+    // Проверяем статус ответа
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('YooKassa API error:', response.status, errorText);
+      throw new Error(`Payment API error: ${response.status}`);
     }
 
-    // Инициализация ЮKassa
-    const yooKassa = new YooKassa({
-      shopId: SHOP_ID,
-      secretKey: SECRET_KEY
-    });
+    const payment = await response.json();
+    console.log('Payment created:', payment.id);
 
-    // Создание платежа
-    const payment = await yooKassa.createPayment({
-      amount: {
-        value: amount.toString(),
-        currency: 'RUB'
-      },
-      payment_method_data: {
-        type: 'bank_card'
-      },
-      confirmation: {
-        type: 'redirect',
-        return_url: `${SITE_URL}/success?product=${productId}`
-      },
-      description: description,
-      metadata: {
-        productId: productId
-      }
-    });
+    // Проверяем наличие confirmation_url
+    if (!payment.confirmation || !payment.confirmation.confirmation_url) {
+      throw new Error('No confirmation URL received from payment provider');
+    }
 
-    // Возвращаем данные для редиректа
-    return res.status(200).json({
-      id: payment.id,
+    // Возвращаем успешный ответ
+    res.status(200).json({
+      success: true,
+      payment_id: payment.id,
       confirmation_url: payment.confirmation.confirmation_url,
       status: payment.status
     });
 
   } catch (error) {
     console.error('Payment creation error:', error);
-    return res.status(500).json({ 
+    
+    // Возвращаем понятную ошибку
+    res.status(500).json({
+      success: false,
       error: 'Payment creation failed',
-      details: error.message 
+      message: error.message,
+      details: 'Please try again or contact support'
     });
   }
-}
+};
