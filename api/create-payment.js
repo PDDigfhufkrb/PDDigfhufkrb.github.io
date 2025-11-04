@@ -22,8 +22,22 @@ module.exports = async (req, res) => {
     const SECRET_KEY = process.env.SECRET_KEY;
     const SITE_URL = process.env.SITE_URL;
 
+    console.log('Environment variables:', { 
+      hasShopId: !!SHOP_ID, 
+      hasSecretKey: !!SECRET_KEY,
+      hasSiteUrl: !!SITE_URL 
+    });
+
+    // Проверяем что переменные есть
     if (!SHOP_ID || !SECRET_KEY) {
-      throw new Error('Payment keys not configured');
+      console.error('Missing environment variables:', {
+        SHOP_ID: SHOP_ID ? 'set' : 'missing',
+        SECRET_KEY: SECRET_KEY ? 'set' : 'missing'
+      });
+      return res.status(500).json({ 
+        success: false, 
+        error: 'Payment configuration error. Please contact support.' 
+      });
     }
 
     const paymentData = {
@@ -34,19 +48,18 @@ module.exports = async (req, res) => {
       capture: true,
       confirmation: {
         type: "redirect",
-        return_url: `${SITE_URL}/success.html?product=${productId}`
+        return_url: `${SITE_URL || 'https://pd-digfhufkrb-github-io.vercel.app'}/success.html?product=${productId}`
       },
-      description: productName,
-      metadata: {
-        product_id: productId
-      }
+      description: productName
     };
+
+    console.log('Creating payment for:', productName, price);
 
     const response = await fetch('https://api.yookassa.ru/v3/payments', {
       method: 'POST',
       headers: {
         'Authorization': 'Basic ' + Buffer.from(SHOP_ID + ':' + SECRET_KEY).toString('base64'),
-        'Idempotence-Key': 'key-' + Date.now() + '-' + Math.random().toString(36).substring(7),
+        'Idempotence-Key': 'key-' + Date.now() + '-' + Math.random().toString(36).substring(2, 15),
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(paymentData)
@@ -54,13 +67,16 @@ module.exports = async (req, res) => {
 
     const payment = await response.json();
 
-    if (payment.error) {
-      throw new Error(payment.description || 'Payment creation failed');
+    if (!response.ok) {
+      console.error('YooKassa API error:', payment);
+      throw new Error(payment.description || `HTTP ${response.status}`);
     }
 
     if (!payment.confirmation || !payment.confirmation.confirmation_url) {
-      throw new Error('No confirmation URL received');
+      throw new Error('No confirmation URL received from payment provider');
     }
+
+    console.log('Payment created successfully:', payment.id);
 
     res.status(200).json({
       success: true,
@@ -69,7 +85,7 @@ module.exports = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Payment error:', error);
+    console.error('Payment creation error:', error);
     res.status(500).json({
       success: false,
       error: error.message || 'Internal server error'
