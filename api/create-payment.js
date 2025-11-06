@@ -1,5 +1,4 @@
 const fetch = require('node-fetch');
-const https = require('https');
 
 module.exports = async (req, res) => {
   // Разрешаем CORS
@@ -17,86 +16,82 @@ module.exports = async (req, res) => {
 
   try {
     const { productId, productName, price } = req.body;
-    
-    // Добавляем отладку
-    console.log('Received request:', { productId, productName, price });
-    console.log('Environment variables check:', {
-      SHOP_ID: process.env.SHOP_ID ? 'SET' : 'MISSING',
-      SECRET_KEY: process.env.SECRET_KEY ? 'SET' : 'MISSING', 
-      SITE_URL: process.env.SITE_URL ? 'SET' : 'MISSING'
-    });
 
+    // Получаем ключи из переменных окружения Vercel
     const SHOP_ID = process.env.SHOP_ID;
     const SECRET_KEY = process.env.SECRET_KEY;
     const SITE_URL = process.env.SITE_URL;
 
-    if (!SHOP_ID || !SECRET_KEY || !SITE_URL) {
-      console.error('Missing environment variables');
-      return res.status(500).json({ 
-        success: false,
-        error: 'Server configuration error: Missing environment variables'
-      });
+    if (!SHOP_ID || !SECRET_KEY) {
+      throw new Error('Payment keys not configured');
     }
 
-    // Исправление: безопасное преобразование цены
-    const amountValue = typeof price === 'number' ? price.toFixed(2) : Number(price).toFixed(2);
-    
+    // Формируем данные для платежа согласно API ЮKassa
     const paymentData = {
       amount: {
-        value: amountValue,
+        value: price.toFixed(2), // Обязательно 2 знака после запятой
         currency: "RUB"
       },
-      capture: true,
+      capture: true, // Мгновенное списание
       confirmation: {
         type: "redirect",
         return_url: `${SITE_URL}/success.html?product=${productId}`
       },
-      description: productName
+      description: productName.substring(0, 128), // Максимум 128 символов
+      metadata: {
+        product_id: productId
+      }
     };
 
-    console.log('Payment data:', paymentData);
-
+    // Генерируем уникальный ключ идемпотентности
     const idempotenceKey = `key-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
+    // Создаем Basic Auth заголовок
+    const authString = Buffer.from(SHOP_ID + ':' + SECRET_KEY).toString('base64');
+
+    // Отправляем запрос к API ЮKassa
     const response = await fetch('https://api.yookassa.ru/v3/payments', {
       method: 'POST',
       headers: {
-        'Authorization': 'Basic ' + Buffer.from(SHOP_ID + ':' + SECRET_KEY).toString('base64'),
+        'Authorization': `Basic ${authString}`,
         'Idempotence-Key': idempotenceKey,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-Agent': 'PDD-Shop/1.0'
       },
-      body: JSON.stringify(paymentData),
-      agent: new https.Agent({
-        rejectUnauthorized: false
-      })
+      body: JSON.stringify(paymentData)
     });
 
-    console.log('YooKassa response status:', response.status);
-
+    // Проверяем статус ответа
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('YooKassa error:', errorText);
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
 
     const payment = await response.json();
-    console.log('YooKassa payment response:', payment);
 
-    if (!payment.confirmation || !payment.confirmation.confirmation_url) {
-      throw new Error('No confirmation URL received from YooKassa');
+    // Проверяем ответ от ЮKassa
+    if (payment.error) {
+      throw new Error(payment.description || 'Payment creation failed');
     }
 
+    if (!payment.confirmation || !payment.confirmation.confirmation_url) {
+      throw new Error('No confirmation URL received from payment gateway');
+    }
+
+    // Возвращаем успешный ответ
     res.status(200).json({
       success: true,
       payment_id: payment.id,
-      confirmation_url: payment.confirmation.confirmation_url
+      confirmation_url: payment.confirmation.confirmation_url,
+      status: payment.status
     });
 
   } catch (error) {
-    console.error('Payment error:', error);
+    console.error('Payment API error:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message || 'Internal server error',
+      code: 'PAYMENT_CREATION_FAILED'
     });
   }
 };
