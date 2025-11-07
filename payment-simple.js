@@ -1,4 +1,4 @@
-// payment-simple.js с работающим CORS прокси
+// Альтернативная версия с другим прокси
 const SHOP_ID = '1194993';
 const SECRET_KEY = 'live_1w7Bjx1zewKyJ3-CUmjMuAv0eY_x9dI8byOmEuMibes';
 
@@ -10,13 +10,8 @@ async function createSimplePayment(productId, productName, price) {
         buyButton.textContent = 'Подождите...';
         buyButton.disabled = true;
 
-        console.log('🔄 Создаем платеж для:', productName);
-
         const paymentData = {
-            amount: { 
-                value: price.toString(), 
-                currency: "RUB" 
-            },
+            amount: { value: price.toString(), currency: "RUB" },
             capture: true,
             confirmation: {
                 type: "redirect", 
@@ -25,42 +20,48 @@ async function createSimplePayment(productId, productName, price) {
             description: productName
         };
 
-        // Используем РАБОЧИЙ CORS прокси
-        const proxyUrl = 'https://api.codetabs.com/v1/proxy?quest=';
-        const targetUrl = 'https://api.yookassa.ru/v3/payments';
+        // Пробуем разные прокси по очереди
+        const proxies = [
+            'https://cors-anywhere.herokuapp.com/',
+            'https://api.allorigins.win/raw?url=',
+            'https://corsproxy.io/?'
+        ];
 
-        console.log('📤 Отправляем запрос через прокси...');
+        let lastError = null;
 
-        const response = await fetch(proxyUrl + targetUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Basic ' + btoa(SHOP_ID + ':' + SECRET_KEY),
-                'Idempotence-Key': 'key-' + Date.now() + '-' + Math.random().toString(36),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(paymentData)
-        });
+        for (const proxy of proxies) {
+            try {
+                console.log(`Пробуем прокси: ${proxy}`);
+                
+                const response = await fetch(proxy + 'https://api.yookassa.ru/v3/payments', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(SHOP_ID + ':' + SECRET_KEY),
+                        'Idempotence-Key': 'key-' + Date.now(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(paymentData)
+                });
 
-        console.log('✅ Получили ответ, статус:', response.status);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP ${response.status}: ${errorText}`);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.confirmation && result.confirmation.confirmation_url) {
+                        window.location.href = result.confirmation.confirmation_url;
+                        return;
+                    }
+                }
+            } catch (error) {
+                lastError = error;
+                console.log(`Прокси ${proxy} не сработал:`, error);
+                continue;
+            }
         }
 
-        const result = await response.json();
-        console.log('📦 Ответ ЮKassa:', result);
-
-        if (result.confirmation && result.confirmation.confirmation_url) {
-            console.log('🎉 Успех! Переходим к оплате...');
-            window.location.href = result.confirmation.confirmation_url;
-        } else {
-            throw new Error(result.description || 'Не получили ссылку для оплаты');
-        }
+        throw new Error('Все прокси не сработали: ' + (lastError?.message || 'Unknown error'));
 
     } catch (error) {
-        console.error('❌ Ошибка платежа:', error);
-        alert('Ошибка платежа: ' + error.message + '\n\nПопробуйте обновить страницу и повторить.');
+        console.error('Ошибка:', error);
+        alert('Не удалось подключиться к платежной системе. Попробуйте позже.');
     } finally {
         buyButton.textContent = originalText;
         buyButton.disabled = false;
