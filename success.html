@@ -96,11 +96,11 @@
         };
 
         function getProductId() {
-            // 1. Пробуем из URL (новый формат)
+            // 1. Пробуем из URL
             const urlParams = new URLSearchParams(window.location.search);
             let productId = urlParams.get('product_id');
             
-            // 2. Пробуем из localStorage (из product1.html)
+            // 2. Пробуем из localStorage
             if (!productId) {
                 productId = localStorage.getItem('paid_product_id');
                 if (productId) {
@@ -108,12 +108,7 @@
                 }
             }
             
-            // 3. Пробуем старый формат из URL
-            if (!productId) {
-                productId = urlParams.get('product')?.replace('product', '');
-            }
-            
-            return productId || '1'; // По умолчанию первая шпаргалка
+            return productId || '1';
         }
 
         function showProductInfo() {
@@ -134,7 +129,6 @@
             const pdfUrl = pdfFiles[productId];
             
             if (pdfUrl) {
-                // Открываем PDF в новой вкладке
                 window.open(pdfUrl, '_blank');
             } else {
                 alert('Файл не найден. Свяжитесь с поддержкой: example@pdd.ru');
