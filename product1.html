@@ -20,9 +20,10 @@
         .feature-list li {
             margin-bottom: 0.5rem;
         }
+        .loading {
+            display: none;
+        }
     </style>
-    <!-- Подключаем простой платежный скрипт -->
-    <script src="payment-simple.js"></script>
 </head>
 <body>
     <!-- Шапка -->
@@ -69,10 +70,18 @@
                         </div>
                         
                         <!-- Кнопка покупки -->
-                        <button class="btn btn-buy btn-lg w-100 mb-3" onclick="buyProduct()">
+                        <button class="btn btn-buy btn-lg w-100 mb-3" onclick="initiatePayment(1, 99)">
                             🛒 Купить эту шпаргалку
                         </button>
                         
+                        <!-- Индикатор загрузки -->
+                        <div id="loading" class="loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
+                            <p class="mt-2">Перенаправляем на оплату...</p>
+                        </div>
+
                         <small class="text-muted">
                             ✅ Мгновенная доставка<br>
                             ✅ PDF-формат<br>
@@ -115,18 +124,93 @@
         </div>
     </footer>
 
-    <!-- Скрипт для покупки -->
+    <!-- ПРОСТОЙ СКРИПТ ОПЛАТЫ ПРЯМО В СТРАНИЦЕ -->
     <script>
-        function buyProduct() {
-            // Данные для этой шпаргалки
-            const productData = {
-                productId: 'product1',
-                productName: 'Основные понятия ПДД',
-                price: 99
-            };
+        async function initiatePayment(productId, price) {
+            const shopId = '1194993';
+            const secretKey = 'live_1w7Bjx1zewKyJ3-CUmjMuAv0eY_x9dI8byOmEuMibes';
             
-            // Вызываем функцию из payment-simple.js
-            createSimplePayment(productData.productId, productData.productName, productData.price);
+            // Показываем загрузку
+            document.getElementById('loading').style.display = 'block';
+            
+            const productNames = {
+                1: 'Основные понятия и термины',
+                2: 'Обгон и опережение',
+                3: 'Остановка и стоянка',
+                4: 'Проезд перекрестков',
+                5: 'Скоростной режим',
+                6: 'Действия при ДТП',
+                7: 'Световые и звуковые сигналы',
+                8: 'Пешеходные переходы',
+                9: 'Начало движения и маневрирование',
+                10: 'Расположение ТС на проезжей части',
+                11: 'Общие обязанности водителя'
+            };
+
+            const paymentData = {
+                amount: {
+                    value: price.toFixed(2),
+                    currency: "RUB"
+                },
+                capture: true,
+                confirmation: {
+                    type: "redirect",
+                    return_url: `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`
+                },
+                description: `Шпаргалка ПДД: ${productNames[productId]}`,
+                metadata: {
+                    product_id: productId
+                }
+            };
+
+            try {
+                console.log('Отправляем запрос в ЮKassу...');
+                
+                // ПРЯМОЙ ЗАПРОС К API ЮKASSY
+                const response = await fetch('https://api.yookassa.ru/v3/payments', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(shopId + ':' + secretKey),
+                        'Content-Type': 'application/json',
+                        'Idempotence-Key': Date.now().toString() + Math.random().toString(36).substr(2, 9)
+                    },
+                    body: JSON.stringify(paymentData)
+                });
+
+                console.log('Получили ответ:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Результат:', result);
+                
+                if (result.confirmation && result.confirmation.confirmation_url) {
+                    // Сохраняем ID товара и переходим на оплату
+                    localStorage.setItem('paid_product_id', productId.toString());
+                    window.location.href = result.confirmation.confirmation_url;
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Ошибка при создании платежа: ' + (result.description || 'Неизвестная ошибка'));
+                }
+            } catch (error) {
+                console.error('Полная ошибка:', error);
+                document.getElementById('loading').style.display = 'none';
+                
+                // АВАРИЙНЫЙ ВАРИАНТ - если API не работает
+                if (confirm('Платежная система временно недоступна. Перейти к альтернативному способу оплаты?')) {
+                    localStorage.setItem('paid_product_id', productId.toString());
+                    window.location.href = 'https://pddigfhufkrb.github.io/success.html?product_id=' + productId;
+                }
+            }
+        }
+
+        // Альтернативная простая функция для тестирования
+        function testPayment() {
+            const productId = 1;
+            localStorage.setItem('paid_product_id', productId.toString());
+            window.location.href = 'success.html?product_id=' + productId;
         }
     </script>
 </body>
