@@ -44,6 +44,10 @@
             </button>
         </div>
 
+        <div id="productInfo" class="mb-3">
+            <!-- Сюда подставится название товара -->
+        </div>
+
         <p class="text-muted small">
             Если возникли проблемы со скачиванием, свяжитесь с нами: <strong>example@pdd.ru</strong>
         </p>
@@ -61,26 +65,72 @@
     </footer>
 
     <script>
-        function downloadPDF() {
-            // Получаем ID товара из URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('product') || 'product1';
-            
-            // Реальные ссылки на PDF
-            const pdfFiles = {
-                'product1': 'https://drive.google.com/file/d/1kYFSr6S_DGIE74yMo0v8EJMbH__r3O6D/view?usp=sharing',
-                'product2': 'https://drive.google.com/file/d/1GoBl8agPglK6Y0MbYubxueeYqLCOU2Ze/view?usp=sharing',
-                'product3': 'https://drive.google.com/file/d/1rhj9CIUO0TMuL0546bpgQSJQFeWRFs4s/view?usp=sharing',
-                'product4': 'https://drive.google.com/file/d/1Hh4sdwf9Mc1BL6cErskcQ2_Xi46w02Ri/view?usp=sharing',
-                'product5': 'https://drive.google.com/file/d/1W2VYr-yRUfeBCCLoLSvRIdxFcGG0GN9B/view?usp=sharing',
-                'product6': 'https://drive.google.com/file/d/1gDCXI0B0wE9UI7MOb0MSE1dRPzZ4QQrc/view?usp=sharing',
-                'product7': 'https://drive.google.com/file/d/12hShwoi5-5VVij3PPpu6WZdC_F2g3eqe/view?usp=sharing',
-                'product8': 'https://drive.google.com/file/d/18nWk92JVQTWx9UMWGysQQVhAYT38fnZk/view?usp=sharing',
-                'product9': 'https://drive.google.com/file/d/1-NXen5DEx00KKXCS2w8d3z0j-GAeCVRI/view?usp=sharing',
-                'product10': 'https://drive.google.com/file/d/1PyAOC7ZanERh22lcO49wuT1saouBCxXe/view?usp=sharing',
-                'product11': 'https://drive.google.com/file/d/1mNqgnOAnJFx69KMut87MMfxbjNPfZcDN/view?usp=sharing'
-            };
+        // Названия товаров для отображения
+        const productNames = {
+            '1': 'Основные понятия и термины',
+            '2': 'Обгон и опережение', 
+            '3': 'Остановка и стоянка',
+            '4': 'Проезд перекрестков',
+            '5': 'Скоростной режим',
+            '6': 'Действия при ДТП',
+            '7': 'Световые и звуковые сигналы',
+            '8': 'Пешеходные переходы',
+            '9': 'Начало движения и маневрирование',
+            '10': 'Расположение ТС на проезжей части',
+            '11': 'Общие обязанности водителя'
+        };
 
+        // Реальные ссылки на PDF
+        const pdfFiles = {
+            '1': 'https://drive.google.com/file/d/1kYFSr6S_DGIE74yMo0v8EJMbH__r3O6D/view?usp=sharing',
+            '2': 'https://drive.google.com/file/d/1GoBl8agPglK6Y0MbYubxueeYqLCOU2Ze/view?usp=sharing',
+            '3': 'https://drive.google.com/file/d/1rhj9CIUO0TMuL0546bpgQSJQFeWRFs4s/view?usp=sharing',
+            '4': 'https://drive.google.com/file/d/1Hh4sdwf9Mc1BL6cErskcQ2_Xi46w02Ri/view?usp=sharing',
+            '5': 'https://drive.google.com/file/d/1W2VYr-yRUfeBCCLoLSvRIdxFcGG0GN9B/view?usp=sharing',
+            '6': 'https://drive.google.com/file/d/1gDCXI0B0wE9UI7MOb0MSE1dRPzZ4QQrc/view?usp=sharing',
+            '7': 'https://drive.google.com/file/d/12hShwoi5-5VVij3PPpu6WZdC_F2g3eqe/view?usp=sharing',
+            '8': 'https://drive.google.com/file/d/18nWk92JVQTWx9UMWGysQQVhAYT38fnZk/view?usp=sharing',
+            '9': 'https://drive.google.com/file/d/1-NXen5DEx00KKXCS2w8d3z0j-GAeCVRI/view?usp=sharing',
+            '10': 'https://drive.google.com/file/d/1PyAOC7ZanERh22lcO49wuT1saouBCxXe/view?usp=sharing',
+            '11': 'https://drive.google.com/file/d/1mNqgnOAnJFx69KMut87MMfxbjNPfZcDN/view?usp=sharing'
+        };
+
+        function getProductId() {
+            // 1. Пробуем из URL (новый формат)
+            const urlParams = new URLSearchParams(window.location.search);
+            let productId = urlParams.get('product_id');
+            
+            // 2. Пробуем из localStorage (из product1.html)
+            if (!productId) {
+                productId = localStorage.getItem('paid_product_id');
+                if (productId) {
+                    localStorage.removeItem('paid_product_id');
+                }
+            }
+            
+            // 3. Пробуем старый формат из URL
+            if (!productId) {
+                productId = urlParams.get('product')?.replace('product', '');
+            }
+            
+            return productId || '1'; // По умолчанию первая шпаргалка
+        }
+
+        function showProductInfo() {
+            const productId = getProductId();
+            const productInfo = document.getElementById('productInfo');
+            
+            if (productNames[productId]) {
+                productInfo.innerHTML = `
+                    <div class="alert alert-info">
+                        <strong>Ваша шпаргалка:</strong> ${productNames[productId]}
+                    </div>
+                `;
+            }
+        }
+
+        function downloadPDF() {
+            const productId = getProductId();
             const pdfUrl = pdfFiles[productId];
             
             if (pdfUrl) {
@@ -97,6 +147,11 @@
                 downloadPDF();
             }
         }, 2000);
+
+        // Показываем информацию о товаре при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            showProductInfo();
+        });
     </script>
 </body>
 </html>
