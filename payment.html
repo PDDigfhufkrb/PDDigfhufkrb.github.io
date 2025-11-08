@@ -48,12 +48,13 @@
             <h4>Оплата через ЮKassу</h4>
         </div>
 
-        <!-- Форма ЮKassы с фиксированной ценой -->
+        <!-- Форма ЮKassы с фиксированной ценой и возвратом -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
         <form class="yoomoney-payment-form fixed-price" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
             <input type="hidden" name="customerNumber" value="pdd_customer">
             <input type="hidden" name="orderNumber" value="order_pdd_1">
             <input type="hidden" name="cps_email" value="customer@email.com">
+            <input type="hidden" name="successUrl" value="https://pddigfhufkrb.github.io/success.html?product_id=1">
             
             <div class="ym-payment-btn-block ym-align-space-between">
                 <div class="ym-input-icon-rub">
@@ -75,9 +76,10 @@
         const productId = urlParams.get('product') || '1';
         const price = urlParams.get('price') || '99';
 
-        // Обновляем orderNumber в зависимости от товара
+        // Обновляем данные формы
         document.querySelector('input[name="orderNumber"]').value = 'order_pdd_' + productId;
         document.querySelector('input[name="sum"]').value = price;
+        document.querySelector('input[name="successUrl"]').value = `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
         
         // Обновляем текст кнопки
         const button = document.querySelector('.ym-btn-pay');
