@@ -17,6 +17,12 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
+        .fixed-price .ym-input-icon-rub {
+            display: none;
+        }
+        .fixed-price .ym-payment-btn-block {
+            justify-content: center !important;
+        }
     </style>
 </head>
 <body>
@@ -44,13 +50,15 @@
 
         <!-- Форма ЮKassы с фиксированной ценой -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
-        <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+        <form class="yoomoney-payment-form fixed-price" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
             <input type="hidden" name="customerNumber" value="pdd_customer">
             <input type="hidden" name="orderNumber" value="order_pdd_1">
             <input type="hidden" name="cps_email" value="customer@email.com">
-            <input type="hidden" name="sum" value="99">
             
             <div class="ym-payment-btn-block ym-align-space-between">
+                <div class="ym-input-icon-rub">
+                    <input name="sum" class="ym-input ym-sum-input ym-required-input" type="hidden" value="99">
+                </div>
                 <button data-text="Оплатить 99 ₽" class="ym-btn-pay ym-result-price">
                     <span class="ym-text-crop">Оплатить 99 ₽</span> 
                 </button>
@@ -69,6 +77,12 @@
 
         // Обновляем orderNumber в зависимости от товара
         document.querySelector('input[name="orderNumber"]').value = 'order_pdd_' + productId;
+        document.querySelector('input[name="sum"]').value = price;
+        
+        // Обновляем текст кнопки
+        const button = document.querySelector('.ym-btn-pay');
+        button.setAttribute('data-text', `Оплатить ${price} ₽`);
+        button.querySelector('.ym-text-crop').textContent = `Оплатить ${price} ₽`;
     </script>
 </body>
 </html>
