@@ -40,35 +40,25 @@
 
         <div class="text-center mb-4">
             <h4>Оплата через ЮKassу</h4>
-            <p class="text-muted">Введите сумму и нажмите "Оплатить"</p>
         </div>
 
-        <!-- Форма ЮKassы БЕЗ изменений -->
+        <!-- Форма ЮKassы с фиксированной ценой -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
         <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
             <input type="hidden" name="customerNumber" value="pdd_customer">
             <input type="hidden" name="orderNumber" value="order_pdd_1">
             <input type="hidden" name="cps_email" value="customer@email.com">
+            <input type="hidden" name="sum" value="99">
             
             <div class="ym-payment-btn-block ym-align-space-between">
-                <div class="ym-input-icon-rub">
-                    <input name="sum" placeholder="99.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
-                </div>
-                <button data-text="Оплатить" class="ym-btn-pay ym-result-price">
-                    <span class="ym-text-crop">Оплатить</span> 
-                    <span class="ym-price-output"></span>
+                <button data-text="Оплатить 99 ₽" class="ym-btn-pay ym-result-price">
+                    <span class="ym-text-crop">Оплатить 99 ₽</span> 
                 </button>
                 <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.28.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
             </div>
             <input name="shopId" type="hidden" value="1194993">
         </form>
         <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.28.0"></script>
-
-        <div class="mt-4 text-center">
-            <a href="success.html?product_id=1" class="btn btn-outline-secondary btn-sm">
-                🔧 Тестовый переход к файлу
-            </a>
-        </div>
     </div>
 
     <script>
@@ -77,10 +67,7 @@
         const productId = urlParams.get('product') || '1';
         const price = urlParams.get('price') || '99';
 
-        // Устанавливаем цену по умолчанию
-        document.querySelector('input[name="sum"]').value = price;
-        
-        // Обновляем orderNumber
+        // Обновляем orderNumber в зависимости от товара
         document.querySelector('input[name="orderNumber"]').value = 'order_pdd_' + productId;
     </script>
 </body>
