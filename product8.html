@@ -73,9 +73,9 @@
                         </div>
                         
                         <!-- Кнопка покупки -->
-                        <button class="btn btn-buy btn-lg w-100 mb-3" onclick="buyProduct()">
+                        <a href="payment.html?product=8&price=99" class="btn btn-success btn-lg w-100 mb-3">
                             🛒 Купить эту шпаргалку
-                        </button>
+                        </a>
                         
                         <small class="text-muted">
                             ✅ Мгновенная доставка<br>
@@ -101,6 +101,7 @@
                         <h6>🔄 Как это работает?</h6>
                         <ol class="small">
                             <li>Нажимаете "Купить"</li>
+                            <li>Переходите на страницу оплаты</li>
                             <li>Оплачиваете через ЮKassу</li>
                             <li>Сразу получаете PDF-файл</li>
                         </ol>
@@ -117,44 +118,5 @@
             <p class="mb-0"><a href="policy.html" class="text-muted">Политика конфиденциальности</a></p>
         </div>
     </footer>
-
-    <script>
-        async function buyProduct() {
-            const buyButton = event.target;
-            const originalText = buyButton.textContent;
-            
-            try {
-                buyButton.textContent = 'Подождите...';
-                buyButton.disabled = true;
-
-                const productData = {
-                    productId: 'product8',
-                    productName: 'Пешеходные переходы',
-                    price: 99
-                };
-
-                const response = await fetch('/api/create-payment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(productData)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    window.location.href = result.confirmation_url;
-                } else {
-                    alert('Ошибка: ' + result.error);
-                }
-            } catch (error) {
-                alert('Ошибка соединения с сервером');
-            } finally {
-                buyButton.textContent = originalText;
-                buyButton.disabled = false;
-            }
-        }
-    </script>
 </body>
 </html>
