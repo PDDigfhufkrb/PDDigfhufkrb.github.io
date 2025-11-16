@@ -17,6 +17,12 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
+        .fixed-price .ym-input-icon-rub {
+            display: none !important;
+        }
+        .fixed-price .ym-payment-btn-block {
+            justify-content: center !important;
+        }
     </style>
 </head>
 <body>
@@ -33,79 +39,50 @@
 
     <div class="container payment-container">
         <div class="product-info">
-            <h5 id="productTitle">Загрузка...</h5>
+            <h5>Основные понятия и термины ПДД</h5>
             <p class="mb-1">Шпаргалка в формате PDF</p>
-            <p class="h4 text-primary" id="productPrice">99 ₽</p>
+            <p class="h4 text-primary">99 ₽</p>
         </div>
 
         <div class="text-center mb-4">
             <h4>Оплата через ЮKassу</h4>
         </div>
 
-        <!-- Контейнер для формы -->
-        <div id="payment-form-container"></div>
+        <!-- Форма ЮKassы с исправленным success URL -->
+        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
+        <form class="yoomoney-payment-form fixed-price" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+            
+            <div class="ym-hidden-inputs">
+                <!-- ВАЖНО: добавляем product_id в success URL -->
+                <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html?product_id=1">
+                <input name="customerNumber" type="hidden" value="pdd_customer">
+                <input name="orderNumber" type="hidden" value="order_pdd_1">
+            </div>
+            
+            <div class="ym-payment-btn-block">
+                <div class="ym-input-icon-rub ym-display-none">
+                    <input name="sum" class="ym-input ym-sum-input ym-required-input" type="hidden" value="99">
+                </div>
+                <button data-text="Оплатить 99 ₽" class="ym-btn-pay ym-result-price">
+                    <span class="ym-text-crop">Оплатить 99 ₽</span> 
+                    <span class="ym-price-output"> 99,00&nbsp;₽</span>
+                </button>
+                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+            </div>
+            <input name="shopId" type="hidden" value="1194993">
+        </form>
+        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
     </div>
 
     <script>
-        // Получаем параметры из URL
+        // Динамически подставляем product_id из URL
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('product') || '1';
-        const price = urlParams.get('price') || '99';
-
-        const productNames = {
-            '1': 'Основные понятия и термины ПДД',
-            '2': 'Обгон и опережение',
-            '3': 'Остановка и стоянка',
-            '4': 'Проезд перекрестков', 
-            '5': 'Скоростной режим',
-            '6': 'Действия при ДТП',
-            '7': 'Световые и звуковые сигналы',
-            '8': 'Пешеходные переходы',
-            '9': 'Начало движения и маневрирование',
-            '10': 'Расположение ТС на проезжей части',
-            '11': 'Общие обязанности водителя'
-        };
-
-        // Обновляем информацию о товаре
-        document.getElementById('productTitle').textContent = productNames[productId] || 'Шпаргалка ПДД';
-        document.getElementById('productPrice').textContent = price + ' ₽';
-
-        // Создаем форму динамически
-        function createPaymentForm() {
-            const formHTML = `
-                <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
-                <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-                    <input type="hidden" name="customerNumber" value="pdd_customer_${productId}">
-                    <input type="hidden" name="orderNumber" value="order_pdd_${productId}">
-                    <input type="hidden" name="cps_email" value="customer@email.com">
-                    <input type="hidden" name="successUrl" value="https://pddigfhufkrb.github.io/success.html?product_id=${productId}">
-                    <input type="hidden" name="sum" value="${price}">
-                    
-                    <div class="ym-payment-btn-block ym-align-space-between">
-                        <div class="ym-input-icon-rub">
-                            <input name="sum" class="ym-input ym-sum-input ym-required-input" type="hidden" value="${price}">
-                        </div>
-                        <button data-text="Оплатить ${price} ₽" class="ym-btn-pay ym-result-price">
-                            <span class="ym-text-crop">Оплатить ${price} ₽</span> 
-                        </button>
-                        <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.28.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
-                    </div>
-                    <input name="shopId" type="hidden" value="1194993">
-                </form>
-            `;
-            
-            document.getElementById('payment-form-container').innerHTML = formHTML;
-            
-            // Загружаем скрипт виджета
-            const script = document.createElement('script');
-            script.src = 'https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.28.0';
-            document.body.appendChild(script);
-        }
-
-        // Создаем форму после загрузки страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            createPaymentForm();
-        });
+        
+        // Обновляем orderNumber и shopSuccessURL
+        document.querySelector('input[name="orderNumber"]').value = 'order_pdd_' + productId;
+        document.querySelector('input[name="shopSuccessURL"]').value = 
+            'https://pddigfhufkrb.github.io/success.html?product_id=' + productId;
     </script>
 </body>
 </html>
