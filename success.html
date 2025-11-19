@@ -76,7 +76,7 @@
             '7': 'Световые и звуковые сигналы',
             '8': 'Пешеходные переходы',
             '9': 'Начало движения и маневрирование',
-            '10': 'Расположение ТС на проезжей части',
+            '10': 'Железнодорожные переезды',
             '11': 'Общие обязанности водителя'
         };
 
@@ -96,19 +96,19 @@
         };
 
         function getProductId() {
-            // 1. Пробуем из URL
-            const urlParams = new URLSearchParams(window.location.search);
-            let productId = urlParams.get('product_id');
+            // 1. Пробуем из localStorage (ОСНОВНОЙ СПОСОБ)
+            let productId = localStorage.getItem('last_paid_product');
             
-            // 2. Пробуем из localStorage
-            if (!productId) {
-                productId = localStorage.getItem('paid_product_id');
-                if (productId) {
-                    localStorage.removeItem('paid_product_id');
-                }
+            if (productId) {
+                localStorage.removeItem('last_paid_product'); // Очищаем после использования
+                return productId;
             }
             
-            return productId || '1';
+            // 2. Пробуем из URL (на всякий случай)
+            const urlParams = new URLSearchParams(window.location.search);
+            productId = urlParams.get('product_id');
+            
+            return productId || '1'; // Если ничего не нашли - показываем первую шпаргалку
         }
 
         function showProductInfo() {
