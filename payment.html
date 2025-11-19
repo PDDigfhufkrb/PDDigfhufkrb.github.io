@@ -35,19 +35,19 @@
         <div class="product-info">
             <h5 id="product-title">Основные понятия и термины ПДД</h5>
             <p class="mb-1">Шпаргалка в формате PDF</p>
-            <p class="h4 text-primary">99 ₽</p>
+            <p class="h4 text-primary" id="product-price">99 ₽</p>
         </div>
 
         <div class="text-center mb-4">
             <h4>Оплата через ЮKassу</h4>
         </div>
 
-        <!-- Форма ЮKassы с ДОБАВЛЕННЫМ successUrl -->
+        <!-- Форма ЮKassы с successUrl -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
         <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
             
-            <!-- ДОБАВЛЕНО: поле для возврата после оплаты -->
-            <input type="hidden" name="successUrl" id="successUrl" value="https://pddigfhufkrb.github.io/success.html?product_id=1">
+            <!-- КРИТИЧЕСКИ ВАЖНО: successUrl для возврата после оплаты -->
+            <input type="hidden" name="successUrl" value="https://pddigfhufkrb.github.io/success.html">
             
             <div class="ym-payment-btn-block">
                 <div class="ym-input-icon-rub ym-display-none">
@@ -85,9 +85,8 @@
             '11': 'Обязанности водителя'
         };
 
-        // ОБНОВЛЯЕМ ФОРМУ
+        // Обновляем данные формы
         document.getElementById('sumInput').value = price;
-        document.getElementById('successUrl').value = `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
         
         // Обновляем текст кнопки
         const button = document.getElementById('payButton');
@@ -97,6 +96,7 @@
 
         // Обновляем информацию о товаре
         document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
+        document.getElementById('product-price').textContent = price + ' ₽';
     </script>
 </body>
 </html>
