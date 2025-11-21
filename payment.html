@@ -17,11 +17,11 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
-        .fixed-price .ym-input-icon-rub {
-            display: none;
+        .fixed-price .ym-sum-input {
+            display: none !important;
         }
-        .fixed-price .ym-payment-btn-block {
-            justify-content: center !important;
+        .fixed-price .ym-input-icon-rub {
+            display: none !important;
         }
     </style>
 </head>
@@ -44,6 +44,7 @@
 
         <div class="text-center mb-4">
             <h4>Оплата через ЮKassу</h4>
+            <p class="text-muted">Сумма: <span id="displayPrice">99</span> ₽</p>
         </div>
 
         <!-- Форма ЮKassы -->
@@ -56,7 +57,7 @@
             
             <div class="ym-payment-btn-block ym-align-space-between">
                 <div class="ym-input-icon-rub">
-                    <input name="sum" id="sumInput" class="ym-input ym-sum-input ym-required-input" type="hidden" value="99">
+                    <input name="sum" id="sumInput" class="ym-input ym-sum-input ym-required-input" type="text" value="99" readonly style="display: none;">
                 </div>
                 <button id="payButton" data-text="Оплатить 99 ₽" class="ym-btn-pay ym-result-price">
                     <span class="ym-text-crop">Оплатить 99 ₽</span> 
@@ -99,6 +100,8 @@
             <p class="h4 text-primary">${product.price} ₽</p>
         `;
 
+        document.getElementById('displayPrice').textContent = product.price;
+
         // Обновляем форму
         document.getElementById('orderNumber').value = 'order_pdd_' + productId;
         document.getElementById('sumInput').value = product.price;
@@ -108,6 +111,13 @@
         const button = document.getElementById('payButton');
         button.setAttribute('data-text', `Оплатить ${product.price} ₽`);
         button.querySelector('.ym-text-crop').textContent = `Оплатить ${product.price} ₽`;
+
+        // Принудительно показываем поле суммы перед отправкой
+        document.querySelector('form').addEventListener('submit', function() {
+            const sumInput = document.getElementById('sumInput');
+            sumInput.style.display = 'block';
+            sumInput.removeAttribute('readonly');
+        });
     </script>
 </body>
 </html>
