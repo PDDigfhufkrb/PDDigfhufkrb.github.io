@@ -79,7 +79,7 @@
                             <span class="h3 text-primary">99 ₽</span>
                         </div>
                         
-                        <a href="payment.html?product=2&price=99" class="btn btn-success btn-lg w-100 mb-3" onclick="setProductId(2)">
+                        <a href="payment.html?product=2&price=99" class="btn btn-success btn-lg w-100 mb-3">
                             🛒 Купить эту шпаргалку
                         </a>
                         
@@ -124,11 +124,5 @@
             <p class="mb-0"><a href="policy.html" class="text-muted">Политика конфиденциальности</a></p>
         </div>
     </footer>
-
-    <script>
-        function setProductId(productId) {
-            localStorage.setItem('last_paid_product', productId.toString());
-        }
-    </script>
 </body>
 </html>
