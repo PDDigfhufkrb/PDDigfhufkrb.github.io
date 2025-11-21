@@ -100,15 +100,15 @@
             let productId = localStorage.getItem('last_paid_product');
             
             if (productId) {
-                localStorage.removeItem('last_paid_product'); // Очищаем после использования
+                localStorage.removeItem('last_paid_product');
                 return productId;
             }
             
-            // 2. Пробуем из URL (на всякий случай)
+            // 2. Пробуем из URL (запасной вариант)
             const urlParams = new URLSearchParams(window.location.search);
             productId = urlParams.get('product_id');
             
-            return productId || '1'; // Если ничего не нашли - показываем первую шпаргалку
+            return productId || '1';
         }
 
         function showProductInfo() {
