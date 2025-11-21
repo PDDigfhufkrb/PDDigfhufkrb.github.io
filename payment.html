@@ -35,19 +35,19 @@
         <div class="product-info">
             <h5 id="product-title">Основные понятия и термины ПДД</h5>
             <p class="mb-1">Шпаргалка в формате PDF</p>
-            <p class="h4 text-primary" id="product-price">99 ₽</p>
+            <p class="h4 text-primary">99 ₽</p>
         </div>
 
         <div class="text-center mb-4">
             <h4>Оплата через ЮKassу</h4>
         </div>
 
-        <!-- Форма ЮKassы с successUrl -->
+        <!-- ФОРМА ЮKASSY БЕЗ ИЗМЕНЕНИЙ + successUrl -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
         <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
             
-            <!-- КРИТИЧЕСКИ ВАЖНО: successUrl для возврата после оплаты -->
-            <input type="hidden" name="successUrl" value="https://pddigfhufkrb.github.io/success.html">
+            <!-- ДОБАВЛЕНО: successUrl для возврата после оплаты -->
+            <input type="hidden" name="successUrl" id="successUrl" value="https://pddigfhufkrb.github.io/success.html">
             
             <div class="ym-payment-btn-block">
                 <div class="ym-input-icon-rub ym-display-none">
@@ -70,7 +70,19 @@
         const productId = urlParams.get('product') || '1';
         const price = urlParams.get('price') || '99';
 
-        // Названия товаров
+        // Сохраняем product_id в localStorage ПЕРЕД оплатой
+        localStorage.setItem('last_paid_product', productId);
+
+        // Обновляем цену в форме
+        document.getElementById('sumInput').value = price;
+        
+        // Обновляем текст кнопки
+        const button = document.getElementById('payButton');
+        button.setAttribute('data-text', `Заплатить ${price} ₽`);
+        button.querySelector('.ym-text-crop').textContent = `Заплатить ${price} ₽`;
+        button.querySelector('.ym-price-output').textContent = ` ${price},00 ₽`;
+
+        // Обновляем информацию о товаре
         const productNames = {
             '1': 'Основные понятия и термины ПДД',
             '2': 'Обгон и опережение',
@@ -84,19 +96,7 @@
             '10': 'Железнодорожные переезды',
             '11': 'Обязанности водителя'
         };
-
-        // Обновляем данные формы
-        document.getElementById('sumInput').value = price;
-        
-        // Обновляем текст кнопки
-        const button = document.getElementById('payButton');
-        button.setAttribute('data-text', `Заплатить ${price} ₽`);
-        button.querySelector('.ym-text-crop').textContent = `Заплатить ${price} ₽`;
-        button.querySelector('.ym-price-output').textContent = ` ${price},00 ₽`;
-
-        // Обновляем информацию о товаре
         document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
-        document.getElementById('product-price').textContent = price + ' ₽';
     </script>
 </body>
 </html>
