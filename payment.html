@@ -5,25 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата - ПДД Шпаргалки</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .payment-container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        .product-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .fixed-price .ym-sum-input {
-            display: none !important;
-        }
-        .fixed-price .ym-input-icon-rub {
-            display: none !important;
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-light bg-white shadow-sm">
@@ -37,86 +18,87 @@
         </div>
     </nav>
 
-    <div class="container payment-container">
-        <div class="product-info" id="productInfo">
-            <!-- Заполнится скриптом -->
+    <div class="container" style="max-width: 500px; margin: 50px auto; padding: 20px;">
+        <div class="product-info" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h5 id="product-title">Загрузка...</h5>
+            <p class="mb-1">Шпаргалка в формате PDF</p>
+            <p class="h4 text-primary" id="product-price">99 ₽</p>
         </div>
 
         <div class="text-center mb-4">
             <h4>Оплата через ЮKassу</h4>
-            <p class="text-muted">Сумма: <span id="displayPrice">99</span> ₽</p>
+            <p class="text-muted">Нажмите кнопку для перехода к оплате</p>
         </div>
 
-        <!-- Форма ЮKassы -->
-        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
-        <form class="yoomoney-payment-form fixed-price" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-            <input type="hidden" name="customerNumber" value="pdd_customer">
-            <input type="hidden" name="orderNumber" id="orderNumber" value="">
-            <input type="hidden" name="cps_email" value="customer@email.com">
-            <input type="hidden" name="successUrl" id="successUrl" value="">
-            
-            <div class="ym-payment-btn-block ym-align-space-between">
-                <div class="ym-input-icon-rub">
-                    <input name="sum" id="sumInput" class="ym-input ym-sum-input ym-required-input" type="text" value="99" readonly style="display: none;">
-                </div>
-                <button id="payButton" data-text="Оплатить 99 ₽" class="ym-btn-pay ym-result-price">
-                    <span class="ym-text-crop">Оплатить 99 ₽</span> 
-                </button>
-                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.28.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
-            </div>
-            <input name="shopId" type="hidden" value="1194993">
-        </form>
-        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.28.0"></script>
+        <!-- ПРОСТАЯ КНОПКА, КОТОРАЯ ТОЧНО РАБОТАЕТ -->
+        <div class="text-center">
+            <button id="simplePayButton" class="btn btn-success btn-lg" style="padding: 15px 30px; font-size: 1.2rem;">
+                💳 Перейти к оплате
+            </button>
+        </div>
     </div>
 
     <script>
-        // Данные товаров
-        const products = {
-            '1': { name: 'Основные понятия и термины ПДД', price: 99 },
-            '2': { name: 'Обгон, опережение, встречный разъезд', price: 99 },
-            '3': { name: 'Остановка и стоянка', price: 99 },
-            '4': { name: 'Проезд перекрестков', price: 99 },
-            '5': { name: 'Скоростной режим', price: 99 },
-            '6': { name: 'Действия при ДТП', price: 99 },
-            '7': { name: 'Световые и звуковые сигналы', price: 99 },
-            '8': { name: 'Пешеходные переходы', price: 99 },
-            '9': { name: 'Начало движения и маневрирование', price: 99 },
-            '10': { name: 'Расположение ТС на проезжей части', price: 99 },
-            '11': { name: 'Общие обязанности водителя', price: 99 }
-        };
-
         // Получаем параметры из URL
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('product') || '1';
         const price = urlParams.get('price') || '99';
 
-        // Получаем данные товара
-        const product = products[productId] || products['1'];
+        console.log('Product ID:', productId, 'Price:', price);
 
-        // Обновляем страницу
-        document.getElementById('productInfo').innerHTML = `
-            <h5>${product.name}</h5>
-            <p class="mb-1">Шпаргалка в формате PDF</p>
-            <p class="h4 text-primary">${product.price} ₽</p>
-        `;
+        // Сохраняем product_id в localStorage
+        localStorage.setItem('last_paid_product', productId);
 
-        document.getElementById('displayPrice').textContent = product.price;
+        // Названия товаров
+        const productNames = {
+            '1': 'Основные понятия и термины ПДД',
+            '2': 'Обгон и опережение', 
+            '3': 'Остановка и стоянка',
+            '4': 'Проезд перекрестков',
+            '5': 'Скоростной режим',
+            '6': 'Действия при ДТП',
+            '7': 'Световые и звуковые сигналы',
+            '8': 'Пешеходные переходы',
+            '9': 'Начало движения и маневрирование',
+            '10': 'Железнодорожные переезды',
+            '11': 'Общие обязанности водителя'
+        };
 
-        // Обновляем форму
-        document.getElementById('orderNumber').value = 'order_pdd_' + productId;
-        document.getElementById('sumInput').value = product.price;
-        document.getElementById('successUrl').value = `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
-        
-        // Обновляем кнопку
-        const button = document.getElementById('payButton');
-        button.setAttribute('data-text', `Оплатить ${product.price} ₽`);
-        button.querySelector('.ym-text-crop').textContent = `Оплатить ${product.price} ₽`;
+        // Обновляем интерфейс
+        document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
+        document.getElementById('product-price').textContent = price + ' ₽';
 
-        // Принудительно показываем поле суммы перед отправкой
-        document.querySelector('form').addEventListener('submit', function() {
-            const sumInput = document.getElementById('sumInput');
-            sumInput.style.display = 'block';
-            sumInput.removeAttribute('readonly');
+        // Обработчик для простой кнопки
+        document.getElementById('simplePayButton').addEventListener('click', function() {
+            console.log('Переход к оплате товара:', productId);
+            
+            // Создаем форму для ЮKassa
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://yookassa.ru/integration/simplepay/payment';
+            
+            // Добавляем обязательные поля
+            const shopId = document.createElement('input');
+            shopId.type = 'hidden';
+            shopId.name = 'shopId';
+            shopId.value = '1194993';
+            form.appendChild(shopId);
+            
+            const sum = document.createElement('input');
+            sum.type = 'hidden';
+            sum.name = 'sum';
+            sum.value = price;
+            form.appendChild(sum);
+            
+            const successUrl = document.createElement('input');
+            successUrl.type = 'hidden';
+            successUrl.name = 'shopSuccessURL';
+            successUrl.value = `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
+            form.appendChild(successUrl);
+            
+            // Отправляем форму
+            document.body.appendChild(form);
+            form.submit();
         });
     </script>
 </body>
