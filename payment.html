@@ -17,8 +17,12 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
-        .yoomoney-payment-form {
-            margin-top: 20px;
+        #manualPayButton {
+            background: #00c853;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            width: 100%;
         }
     </style>
 </head>
@@ -46,22 +50,18 @@
             <p class="text-muted">Нажмите кнопку ниже для перехода к оплате</p>
         </div>
 
-        <!-- ФОРМА ЮKASSY - МИНИМАЛЬНЫЕ ИЗМЕНЕНИЯ -->
-        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
-        <form id="yookassaForm" class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-            
-            <!-- ОСНОВНЫЕ СКРЫТЫЕ ПОЛЯ -->
+        <!-- ВАРИАНТ 1: РУЧНАЯ ФОРМА (надежный способ) -->
+        <div class="text-center">
+            <button id="manualPayButton" class="btn btn-success btn-lg">
+                💳 Перейти к оплате 99 ₽
+            </button>
+        </div>
+
+        <!-- СКРЫТАЯ ФОРМА ДЛЯ ЮKASSA -->
+        <form id="yookassaForm" action="https://yookassa.ru/integration/simplepay/payment" method="post" style="display: none;">
             <input type="hidden" name="shopId" value="1194993">
             <input type="hidden" name="sum" id="sumInput" value="99">
-            <input type="hidden" name="shopSuccessURL" id="successUrl" value="https://pddigfhufkrb.github.io/success.html">
-            
-            <!-- КНОПКА ОПЛАТЫ -->
-            <div class="ym-payment-btn-block">
-                <button type="submit" class="ym-btn-pay ym-result-price" id="payButton">
-                    <span class="ym-text-crop">Заплатить 99 ₽</span>
-                </button>
-                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
-            </div>
+            <input type="hidden" name="shopSuccessURL" id="successUrl" value="">
         </form>
 
         <div class="mt-4 text-center">
@@ -98,35 +98,37 @@
         // Обновляем интерфейс
         document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
         
-        // Обновляем цену в форме
-        document.getElementById('sumInput').value = price;
-        
-        // Обновляем successUrl с product_id
+        // Обновляем кнопку
+        document.getElementById('manualPayButton').textContent = `💳 Перейти к оплате ${price} ₽`;
+
+        // Устанавливаем successUrl с product_id
         document.getElementById('successUrl').value = 
             `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
 
-        // Обновляем текст кнопки
-        const button = document.getElementById('payButton');
-        const textCrop = button.querySelector('.ym-text-crop');
-        if (textCrop) {
-            textCrop.textContent = `Заплатить ${price} ₽`;
-        }
+        // Обновляем цену в форме
+        document.getElementById('sumInput').value = price;
 
-        // Убираем дублирующий ценовый блок если он есть
-        const priceOutput = button.querySelector('.ym-price-output');
-        if (priceOutput) {
-            priceOutput.style.display = 'none';
-        }
-
-        // Добавляем обработчик для формы
-        document.getElementById('yookassaForm').addEventListener('submit', function(e) {
-            console.log('Форма отправляется, product_id:', productId);
-            // Убеждаемся что product_id сохранен
+        // Обработчик для кнопки оплаты
+        document.getElementById('manualPayButton').addEventListener('click', function() {
+            console.log('Отправка формы в ЮKassa, product_id:', productId);
+            
+            // Дополнительно сохраняем product_id
             localStorage.setItem('last_paid_product', productId);
+            
+            // Отправляем форму
+            document.getElementById('yookassaForm').submit();
         });
+
+        // Альтернативный вариант: прямая ссылка (если форма не работает)
+        function createDirectLink() {
+            const successUrl = encodeURIComponent(`https://pddigfhufkrb.github.io/success.html?product_id=${productId}`);
+            return `https://yookassa.ru/integration/simplepay/payment?shopId=1194993&sum=${price}&shopSuccessURL=${successUrl}`;
+        }
+
+        // Если нужен вариант с прямой ссылкой, раскомментируйте:
+        // document.getElementById('manualPayButton').onclick = function() {
+        //     window.location.href = createDirectLink();
+        // };
     </script>
-    
-    <!-- СКРИПТ ЮKASSY ПОСЛЕ НАШИХ ИЗМЕНЕНИЙ -->
-    <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
 </body>
 </html>
