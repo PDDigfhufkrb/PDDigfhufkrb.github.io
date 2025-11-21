@@ -4,20 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата - ПДД Шпаргалки</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .container {
+        .payment-container {
             max-width: 500px;
-            margin: 0 auto;
-            background: white;
+            margin: 50px auto;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .product-info {
             background: #f8f9fa;
@@ -25,47 +17,60 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
-        #payButton {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 20px;
-            font-size: 1.3rem;
-            border-radius: 10px;
-            width: 100%;
-            cursor: pointer;
-            margin: 20px 0;
+        .fixed-price .ym-input-icon-rub {
+            display: none;
         }
-        #payButton:hover {
-            background: #218838;
-        }
-        #payButton:active {
-            background: #1e7e34;
+        .fixed-price .ym-payment-btn-block {
+            justify-content: center !important;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div style="margin-bottom: 20px;">
-            <a href="javascript:history.back()" style="text-decoration: none;">← Назад</a>
+    <nav class="navbar navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="javascript:history.back()">
+                ← Назад к товару
+            </a>
+            <span class="navbar-text">
+                💳 Оплата
+            </span>
         </div>
+    </nav>
 
+    <div class="container payment-container">
         <div class="product-info">
-            <h3 id="product-title">Основные понятия и термины ПДД</h3>
-            <p>Шпаргалка в формате PDF</p>
-            <p style="font-size: 1.5rem; color: #007bff; margin: 0;" id="product-price">99 ₽</p>
+            <!-- ИСПРАВЛЕНО: заголовок будет динамически обновляться -->
+            <h5 id="product-title">Загрузка...</h5>
+            <p class="mb-1">Шпаргалка в формате PDF</p>
+            <p class="h4 text-primary" id="product-price">99 ₽</p>
         </div>
 
-        <h2 style="text-align: center;">Оплата через ЮKassу</h2>
+        <div class="text-center mb-4">
+            <h4>Оплата через ЮKassу</h4>
+        </div>
 
-        <!-- ПРОСТАЯ КНОПКА -->
-        <button id="payButton" onclick="processPayment()">
-            💳 ОПЛАТИТЬ <span id="price-text">99 ₽</span>
-        </button>
-
-        <p style="text-align: center; color: #666; font-size: 0.9rem;">
-            После оплаты вы автоматически получите PDF-файл
-        </p>
+        <!-- Форма ЮKassы с фиксированной ценой + shopSuccessURL -->
+        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
+        <form class="yoomoney-payment-form fixed-price" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+            <!-- ДОБАВЛЕНО: shopSuccessURL с передачей product_id -->
+            <input type="hidden" name="shopSuccessURL" id="successUrl" value="">
+            
+            <input type="hidden" name="customerNumber" value="pdd_customer">
+            <input type="hidden" name="orderNumber" id="orderNumber" value="order_pdd_1">
+            <input type="hidden" name="cps_email" value="customer@email.com">
+            
+            <div class="ym-payment-btn-block ym-align-space-between">
+                <div class="ym-input-icon-rub">
+                    <input name="sum" id="sumInput" class="ym-input ym-sum-input ym-required-input" type="hidden" value="99">
+                </div>
+                <button data-text="Оплатить 99 ₽" class="ym-btn-pay ym-result-price" id="payButton">
+                    <span class="ym-text-crop">Оплатить 99 ₽</span> 
+                </button>
+                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.28.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+            </div>
+            <input name="shopId" type="hidden" value="1194993">
+        </form>
+        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.28.0"></script>
     </div>
 
     <script>
@@ -76,7 +81,10 @@
 
         console.log('Product ID:', productId, 'Price:', price);
 
-        // Обновляем информацию о товаре
+        // Сохраняем product_id в localStorage (резервный способ)
+        localStorage.setItem('last_paid_product', productId);
+
+        // Названия всех товаров
         const productNames = {
             '1': 'Основные понятия и термины ПДД',
             '2': 'Обгон и опережение',
@@ -88,49 +96,45 @@
             '8': 'Пешеходные переходы',
             '9': 'Начало движения и маневрирование',
             '10': 'Железнодорожные переезды',
-            '11': 'Обязанности водителя'
+            '11': 'Общие обязанности водителя'
         };
 
         // Обновляем интерфейс
-        document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
-        document.getElementById('product-price').textContent = price + ' ₽';
-        document.getElementById('price-text').textContent = price + ' ₽';
+        function updateProductInfo() {
+            const productName = productNames[productId] || 'Шпаргалка ПДД';
+            
+            // Обновляем заголовок
+            document.getElementById('product-title').textContent = productName;
+            
+            // Обновляем цену
+            document.getElementById('product-price').textContent = price + ' ₽';
+            
+            // Обновляем title страницы
+            document.title = productName + ' - Оплата';
+            
+            // Обновляем shopSuccessURL с product_id
+            document.getElementById('successUrl').value = 
+                `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
 
-        function processPayment() {
-            console.log('Кнопка нажата! Product ID:', productId);
+            // Обновляем данные формы
+            document.getElementById('orderNumber').value = 'order_pdd_' + productId;
+            document.getElementById('sumInput').value = price;
             
-            // Сохраняем product_id в localStorage
-            localStorage.setItem('last_paid_product', productId);
-            
-            // Создаем и отправляем форму
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://yookassa.ru/integration/simplepay/payment';
-            
-            const fields = [
-                { name: 'shopId', value: '1194993' },
-                { name: 'sum', value: price },
-                { name: 'shopSuccessURL', value: `https://pddigfhufkrb.github.io/success.html?product_id=${productId}` }
-            ];
-            
-            fields.forEach(field => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = field.name;
-                input.value = field.value;
-                form.appendChild(input);
-            });
-            
-            document.body.appendChild(form);
-            console.log('Отправляю форму в ЮKassa...');
-            form.submit();
+            // Обновляем текст кнопки
+            const button = document.getElementById('payButton');
+            button.setAttribute('data-text', `Оплатить ${price} ₽`);
+            button.querySelector('.ym-text-crop').textContent = `Оплатить ${price} ₽`;
         }
 
-        // Тест: проверяем что кнопка доступна
+        // ОБНОВЛЕНО: добавляем обработчик для дополнительной гарантии
+        document.querySelector('form').addEventListener('submit', function() {
+            console.log('Форма отправляется, product_id:', productId);
+            localStorage.setItem('last_paid_product', productId);
+        });
+
+        // Запускаем обновление при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
-            const button = document.getElementById('payButton');
-            console.log('Кнопка найдена:', button);
-            console.log('Кнопка кликабельна:', !button.disabled);
+            updateProductInfo();
         });
     </script>
 </body>
