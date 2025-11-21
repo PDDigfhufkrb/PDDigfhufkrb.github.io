@@ -42,12 +42,12 @@
             <h4>Оплата через ЮKassу</h4>
         </div>
 
-        <!-- ФОРМА ЮKASSY БЕЗ ИЗМЕНЕНИЙ + successUrl -->
+        <!-- ФОРМА ЮKASSY С ИСПРАВЛЕНИЯМИ -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
         <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
             
-            <!-- ДОБАВЛЕНО: successUrl для возврата после оплаты -->
-            <input type="hidden" name="successUrl" id="successUrl" value="https://pddigfhufkrb.github.io/success.html">
+            <!-- ИСПРАВЛЕНО: правильное имя параметра shopSuccessURL -->
+            <input type="hidden" name="shopSuccessURL" id="successUrl" value="">
             
             <div class="ym-payment-btn-block">
                 <div class="ym-input-icon-rub ym-display-none">
@@ -72,6 +72,10 @@
 
         // Сохраняем product_id в localStorage ПЕРЕД оплатой
         localStorage.setItem('last_paid_product', productId);
+
+        // Устанавливаем successUrl с product_id
+        document.getElementById('successUrl').value = 
+            `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
 
         // Обновляем цену в форме
         document.getElementById('sumInput').value = price;
