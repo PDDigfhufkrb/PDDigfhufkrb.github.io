@@ -27,6 +27,7 @@
     </style>
 </head>
 <body>
+    <!-- Шапка -->
     <nav class="navbar navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="index.html">
@@ -38,6 +39,7 @@
         </div>
     </nav>
 
+    <!-- Основной контент -->
     <div class="container my-5">
         <div class="row">
             <div class="col-lg-8">
@@ -79,15 +81,10 @@
                             <span class="h3 text-primary">99 ₽</span>
                         </div>
                         
-                        <!-- Основная кнопка оплаты -->
+                        <!-- Кнопка покупки -->
                         <a href="payment.html?product=2&price=99" class="btn btn-success btn-lg w-100 mb-3">
                             🛒 Купить эту шпаргалку
                         </a>
-
-                        <!-- Тестовая кнопка -->
-                        <button class="btn btn-outline-warning btn-sm w-100 mb-3" onclick="quickBuy(2)">
-                            🔧 Тестовый режим (получить без оплаты)
-                        </button>
                         
                         <small class="text-muted">
                             ✅ Мгновенная доставка<br>
@@ -114,9 +111,9 @@
                         <h6>🔄 Как это работает?</h6>
                         <ol class="small">
                             <li>Нажимаете "Купить"</li>
-                            <li>Переходите на страницу оплаты</li>
                             <li>Оплачиваете через ЮKassу</li>
                             <li>Сразу получаете PDF-файл</li>
+                            <li>Изучаете за 10 минут</li>
                         </ol>
                     </div>
                 </div>
@@ -124,18 +121,12 @@
         </div>
     </div>
 
+    <!-- Футер -->
     <footer class="bg-light py-4 mt-5">
         <div class="container text-center text-muted small">
             <p>📧 example@pdd.ru</p>
             <p class="mb-0"><a href="policy.html" class="text-muted">Политика конфиденциальности</a></p>
         </div>
     </footer>
-
-    <script>
-        function quickBuy(productId) {
-            localStorage.setItem('paid_product_id', productId.toString());
-            window.location.href = 'success.html?product_id=' + productId;
-        }
-    </script>
 </body>
 </html>
