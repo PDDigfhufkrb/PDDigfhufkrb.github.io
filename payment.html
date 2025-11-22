@@ -1,62 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата - ПДД Шпаргалки</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            padding: 50px;
-            font-family: Arial;
-            text-align: center;
+        .payment-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
         }
-        .payment-button {
-            background: #28a745;
-            color: white;
-            padding: 20px 40px;
-            font-size: 24px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin: 20px;
+        .product-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .fixed-price .ym-input-icon-rub {
+            display: none;
+        }
+        .fixed-price .ym-payment-btn-block {
+            justify-content: center !important;
         }
     </style>
 </head>
 <body>
-    <h1>💳 Оплата шпаргалки</h1>
-    <p>Нажмите кнопку для перехода к оплате</p>
+    <nav class="navbar navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="javascript:history.back()">
+                ← Назад к товару
+            </a>
+            <span class="navbar-text">
+                💳 Оплата
+            </span>
+        </div>
+    </nav>
 
-    <button class="payment-button" onclick="processPayment()">
-        Перейти к оплате 99 ₽
-    </button>
+    <div class="container payment-container">
+        <div class="product-info">
+            <h5>Основные понятия и термины ПДД</h5>
+            <p class="mb-1">Шпаргалка в формате PDF</p>
+            <p class="h4 text-primary">99 ₽</p>
+        </div>
+
+        <div class="text-center mb-4">
+            <h4>Оплата через ЮKassу</h4>
+        </div>
+
+        <!-- Форма ЮKassы с фиксированной ценой -->
+        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
+        <form class="yoomoney-payment-form fixed-price" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+            <input type="hidden" name="customerNumber" value="pdd_customer">
+            <input type="hidden" name="orderNumber" value="order_pdd_1">
+            <input type="hidden" name="cps_email" value="customer@email.com">
+            
+            <div class="ym-payment-btn-block ym-align-space-between">
+                <div class="ym-input-icon-rub">
+                    <input name="sum" class="ym-input ym-sum-input ym-required-input" type="hidden" value="99">
+                </div>
+                <button data-text="Оплатить 99 ₽" class="ym-btn-pay ym-result-price">
+                    <span class="ym-text-crop">Оплатить 99 ₽</span> 
+                </button>
+                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.28.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+            </div>
+            <input name="shopId" type="hidden" value="1194993">
+        </form>
+        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.28.0"></script>
+    </div>
 
     <script>
-        function processPayment() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('product') || '1';
-            const price = urlParams.get('price') || '99';
+        // Получаем параметры из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('product') || '1';
+        const price = urlParams.get('price') || '99';
 
-            localStorage.setItem('last_paid_product', productId);
-            
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://yookassa.ru/integration/simplepay/payment';
-            
-            const fields = [
-                {name: 'shopId', value: '1194993'},
-                {name: 'sum', value: price},
-                {name: 'shopSuccessURL', value: `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`}
-            ];
-            
-            fields.forEach(field => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = field.name;
-                input.value = field.value;
-                form.appendChild(input);
-            });
-            
-            document.body.appendChild(form);
-            form.submit();
-        }
+        // Обновляем orderNumber в зависимости от товара
+        document.querySelector('input[name="orderNumber"]').value = 'order_pdd_' + productId;
+        document.querySelector('input[name="sum"]').value = price;
+        
+        // Обновляем текст кнопки
+        const button = document.querySelector('.ym-btn-pay');
+        button.setAttribute('data-text', `Оплатить ${price} ₽`);
+        button.querySelector('.ym-text-crop').textContent = `Оплатить ${price} ₽`;
     </script>
 </body>
 </html>
