@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DEBUG TEST</title>
+    <style>
+        body { padding: 50px; font-family: Arial; }
+        .test-btn { 
+            background: red; 
+            color: white; 
+            padding: 20px; 
+            font-size: 24px; 
+            margin: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 ДЕБАГ ТЕСТ</h1>
+
+    <!-- ТЕСТ 1: Прямой код ЮKassa -->
+    <h2>Тест 1: Чистый код ЮKassa</h2>
+    <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
+    <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post">
+        <div class="ym-hidden-inputs">
+            <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html?product_id=debug1">
+        </div>
+        <div class="ym-payment-btn-block">
+            <div class="ym-input-icon-rub ym-display-none">
+                <input name="sum" value="1" type="hidden">
+            </div>
+            <button data-text="Заплатить" class="ym-btn-pay ym-result-price">
+                <span class="ym-text-crop">Заплатить 1 рубль (Тест 1)</span>
+            </button>
+            <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo">
+        </div>
+        <input name="shopId" type="hidden" value="1194993">
+    </form>
+    <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+
+    <!-- ТЕСТ 2: Простая форма -->
+    <h2>Тест 2: Простая форма</h2>
+    <form action="https://yookassa.ru/integration/simplepay/payment" method="post">
+        <input type="hidden" name="shopId" value="1194993">
+        <input type="hidden" name="sum" value="2">
+        <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html?product_id=debug2">
+        <button type="submit" class="test-btn">
+            Оплатить 2 рубля (Тест 2)
+        </button>
+    </form>
+
+    <!-- ТЕСТ 3: Прямая ссылка -->
+    <h2>Тест 3: Прямая ссылка</h2>
+    <a href="https://yookassa.ru/integration/simplepay/payment?shopId=1194993&sum=3&shopSuccessURL=https://pddigfhufkrb.github.io/success.html?product_id=debug3" 
+       class="test-btn" style="display: inline-block; text-decoration: none;">
+        Оплатить 3 рубля (Тест 3)
+    </a>
+
+    <script>
+        console.log('DEBUG: Страница загружена');
+        
+        // Проверяем кнопки
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('button, .test-btn');
+            console.log('Найдено кнопок:', buttons.length);
+            
+            buttons.forEach((btn, index) => {
+                console.log(`Кнопка ${index}:`, btn.textContent, 'кликабельна:', !btn.disabled);
+            });
+        });
+    </script>
+</body>
+</html>
