@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Оплата шпаргалки</title>
+    <title>Оплата - ПДД Шпаргалки</title>
     <style>
         body {
             padding: 50px;
@@ -11,104 +11,31 @@
         .payment-button {
             background: #28a745;
             color: white;
-            padding: 25px 50px;
-            font-size: 28px;
+            padding: 20px 40px;
+            font-size: 24px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            margin: 30px;
-        }
-        .payment-button:hover {
-            background: #218838;
-        }
-        .test-info {
-            background: #f8f9fa;
-            padding: 20px;
             margin: 20px;
-            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>💳 Оплата шпаргалки ПДД</h1>
-    
-    <div class="test-info">
-        <h3>Товар: <span id="productName">Загрузка...</span></h3>
-        <h2>Цена: <span id="productPrice">99</span> ₽</h2>
-    </div>
+    <h1>💳 Оплата шпаргалки</h1>
+    <p>Нажмите кнопку для перехода к оплате</p>
 
-    <!-- СПОСОБ 1: Прямая ссылка -->
-    <div>
-        <a href="#" id="directLink" class="payment-button">
-            🎯 СПОСОБ 1: Оплатить через ссылку
-        </a>
-    </div>
-
-    <!-- СПОСОБ 2: Форма -->
-    <div>
-        <form id="paymentForm" action="https://yookassa.ru/integration/simplepay/payment" method="post">
-            <input type="hidden" name="shopId" value="1194993">
-            <input type="hidden" name="sum" id="formSum" value="99">
-            <input type="hidden" name="shopSuccessURL" id="formSuccessUrl" value="">
-            
-            <button type="submit" class="payment-button">
-                📝 СПОСОБ 2: Оплатить через форму
-            </button>
-        </form>
-    </div>
-
-    <!-- СПОСОБ 3: JavaScript -->
-    <div>
-        <button onclick="payWithJS()" class="payment-button">
-            ⚡ СПОСОБ 3: Оплатить через JS
-        </button>
-    </div>
-
-    <div style="margin-top: 50px;">
-        <a href="success.html?product_id=2" style="color: blue; text-decoration: underline;">
-            🔧 Тест: Перейти к скачиванию (без оплаты)
-        </a>
-    </div>
+    <button class="payment-button" onclick="processPayment()">
+        Перейти к оплате 99 ₽
+    </button>
 
     <script>
-        // Получаем параметры
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('product') || '2';
-        const price = urlParams.get('price') || '99';
+        function processPayment() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product') || '1';
+            const price = urlParams.get('price') || '99';
 
-        // Названия товаров
-        const productNames = {
-            '1': 'Основные понятия и термины',
-            '2': 'Обгон и опережение',
-            '3': 'Остановка и стоянка',
-            '4': 'Проезд перекрестков', 
-            '5': 'Скоростной режим',
-            '6': 'Действия при ДТП',
-            '7': 'Световые и звуковые сигналы',
-            '8': 'Пешеходные переходы',
-            '9': 'Начало движения и маневрирование',
-            '10': 'Железнодорожные переезды',
-            '11': 'Общие обязанности водителя'
-        };
-
-        // Обновляем интерфейс
-        document.getElementById('productName').textContent = productNames[productId] || 'Шпаргалка ПДД';
-        document.getElementById('productPrice').textContent = price;
-
-        // Success URL
-        const successUrl = `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
-
-        // СПОСОБ 1: Прямая ссылка
-        const directUrl = `https://yookassa.ru/integration/simplepay/payment?shopId=1194993&sum=${price}&shopSuccessURL=${encodeURIComponent(successUrl)}`;
-        document.getElementById('directLink').href = directUrl;
-
-        // СПОСОБ 2: Форма
-        document.getElementById('formSum').value = price;
-        document.getElementById('formSuccessUrl').value = successUrl;
-
-        // СПОСОБ 3: JavaScript
-        function payWithJS() {
             localStorage.setItem('last_paid_product', productId);
+            
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = 'https://yookassa.ru/integration/simplepay/payment';
@@ -116,7 +43,7 @@
             const fields = [
                 {name: 'shopId', value: '1194993'},
                 {name: 'sum', value: price},
-                {name: 'shopSuccessURL', value: successUrl}
+                {name: 'shopSuccessURL', value: `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`}
             ];
             
             fields.forEach(field => {
@@ -130,10 +57,6 @@
             document.body.appendChild(form);
             form.submit();
         }
-
-        console.log('Product ID:', productId, 'Price:', price);
-        console.log('Success URL:', successUrl);
-        console.log('Direct URL:', directUrl);
     </script>
 </body>
 </html>
