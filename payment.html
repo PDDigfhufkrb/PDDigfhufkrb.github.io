@@ -49,26 +49,21 @@
         </div>
 
         <!-- Форма ЮKassы с фиксированной ценой -->
-        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
-        <form class="yoomoney-payment-form fixed-price" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-            <input type="hidden" name="customerNumber" value="pdd_customer">
-            <input type="hidden" name="orderNumber" value="order_pdd_1">
-            <input type="hidden" name="cps_email" value="customer@email.com">
-            
-            <div class="ym-payment-btn-block ym-align-space-between">
-                <div class="ym-input-icon-rub">
-                    <input name="sum" class="ym-input ym-sum-input ym-required-input" type="hidden" value="99">
-                </div>
-                <button data-text="Оплатить 99 ₽" class="ym-btn-pay ym-result-price">
-                    <span class="ym-text-crop">Оплатить 99 ₽</span> 
-                </button>
-                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.28.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
-            </div>
-            <input name="shopId" type="hidden" value="1194993">
-        </form>
-        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.28.0"></script>
+    <div class="ym-hidden-inputs">
+       <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
     </div>
 
+    <div class="ym-payment-btn-block">
+        <div class="ym-input-icon-rub ym-display-none">
+            <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
+        </div>
+        <button data-text="Заплатить" class="ym-btn-pay ym-result-price"><span class="ym-text-crop">Заплатить</span> <span class="ym-price-output"> 99,00&nbsp;₽</span></button><img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+    </div>
+<input name="shopId" type="hidden" value="1194993"></form>
+<script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+
+
+    
     <script>
         // Получаем параметры из URL
         const urlParams = new URLSearchParams(window.location.search);
