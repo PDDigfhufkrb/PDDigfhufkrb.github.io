@@ -79,9 +79,15 @@
                             <span class="h3 text-primary">99 ₽</span>
                         </div>
                         
+                        <!-- Основная кнопка оплаты -->
                         <a href="payment.html?product=2&price=99" class="btn btn-success btn-lg w-100 mb-3">
                             🛒 Купить эту шпаргалку
                         </a>
+
+                        <!-- Тестовая кнопка -->
+                        <button class="btn btn-outline-warning btn-sm w-100 mb-3" onclick="quickBuy(2)">
+                            🔧 Тестовый режим (получить без оплаты)
+                        </button>
                         
                         <small class="text-muted">
                             ✅ Мгновенная доставка<br>
@@ -124,5 +130,12 @@
             <p class="mb-0"><a href="policy.html" class="text-muted">Политика конфиденциальности</a></p>
         </div>
     </footer>
+
+    <script>
+        function quickBuy(productId) {
+            localStorage.setItem('paid_product_id', productId.toString());
+            window.location.href = 'success.html?product_id=' + productId;
+        }
+    </script>
 </body>
 </html>
