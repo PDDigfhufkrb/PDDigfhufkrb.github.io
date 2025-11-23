@@ -18,8 +18,12 @@
             margin-bottom: 20px;
             text-align: center;
         }
-        .yoomoney-payment-form {
-            margin: 30px 0;
+        .btn-pay {
+            background: #28a745;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            width: 100%;
         }
     </style>
 </head>
@@ -43,39 +47,81 @@
             <div class="h4 text-primary">99 ₽</div>
         </div>
 
-        <!-- Форма ЮKassы (ТВОЙ КОД) -->
-        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
-        <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-            <div class="ym-hidden-inputs">
-                <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
-            </div>
-            
-            <div class="ym-payment-btn-block">
-                <div class="ym-input-icon-rub ym-display-none">
-                    <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
-                </div>
-                <button data-text="Заплатить" class="ym-btn-pay ym-result-price">
-                    <span class="ym-text-crop">Заплатить</span> 
-                    <span class="ym-price-output"> 99,00&nbsp;₽</span>
-                </button>
-                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
-            </div>
-            <input name="shopId" type="hidden" value="1194993">
-        </form>
-        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+        <!-- Простая кнопка оплаты -->
+        <button class="btn btn-pay mb-3" onclick="processPayment()">
+            💳 Перейти к оплате
+        </button>
+
+        <!-- Тестовая кнопка -->
+        <button class="btn btn-outline-warning w-100" onclick="quickBuy()">
+            🔧 Тестовый режим (получить без оплаты)
+        </button>
 
         <div class="text-center mt-4">
             <small class="text-muted">
                 После оплаты вы автоматически получите файл<br>
-                Для теста: карта <strong>5555 5555 5555 4477</strong>
+                Для теста используйте тестовую кнопку
             </small>
         </div>
     </div>
 
     <script>
-        // Автоматически сохраняем product_id при загрузке страницы
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('product') || '1';
+
+        function processPayment() {
+            // Сохраняем product_id
+            localStorage.setItem('paid_product_id', productId);
+            
+            // Показываем инструкцию
+            const useRealPayment = confirm(`Для оплаты:
+1. Вы будете перенаправлены на страницу ЮKassы
+2. Оплатите 99 руб любым способом
+3. После оплаты автоматически получите файл
+
+ОК - перейти к оплате
+Отмена - использовать тестовый режим`);
+
+            if (useRealPayment) {
+                // РЕАЛЬНАЯ оплата через форму
+                redirectToYooKassa();
+            } else {
+                quickBuy();
+            }
+        }
+
+        function redirectToYooKassa() {
+            // Создаем и отправляем форму динамически
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'https://yookassa.ru/integration/simplepay/payment';
+            
+            const fields = {
+                'shopId': '1194993',
+                'sum': '99',
+                'customerNumber': 'pdd_user_' + productId,
+                'orderNumber': 'pdd_order_' + Date.now(),
+                'shopSuccessURL': 'https://pddigfhufkrb.github.io/success.html'
+            };
+
+            for (const [name, value] of Object.entries(fields)) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function quickBuy() {
+            localStorage.setItem('paid_product_id', productId);
+            window.location.href = 'success.html?product_id=' + productId;
+        }
+
+        // Автоматически сохраняем product_id
         localStorage.setItem('paid_product_id', productId);
     </script>
 </body>
