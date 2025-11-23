@@ -4,58 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата шпаргалки ПДД</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        .back-button {
-            margin-bottom: 20px;
-        }
-    </style>
+    <!-- НИКАКИХ ДОПОЛНИТЕЛЬНЫХ СТИЛЕЙ И СКРИПТОВ -->
 </head>
 <body>
-    <a href="product1.html" class="back-button">← Назад к товару</a>
-    
-    <h2>Оплата шпаргалки ПДД</h2>
-    <p><strong>Товар:</strong> Основные понятия и термины ПДД</p>
-    <p><strong>Цена:</strong> 99 ₽</p>
-
-    <!-- ЧИСТЫЙ КОД ОТ ЮKASSЫ БЕЗ ИЗМЕНЕНИЙ -->
-    <br><link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
-    <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8" >
-
+    <!-- МИНИМАЛЬНАЯ РАЗМЕТКА -->
+    <div style="max-width: 500px; margin: 0 auto; padding: 20px;">
+        <a href="product1.html" style="display: block; margin-bottom: 20px;">← Назад к товару</a>
+        <h1>Оплата шпаргалки ПДД</h1>
+        <p><strong>Товар:</strong> Основные понятия и термины ПДД</p>
+        <p><strong>Цена:</strong> 99 ₽</p>
         
-        
-
-        
-
-        <div class="ym-hidden-inputs">
-           <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
-           
-           
-        </div>
-
-        
-        
-        <div class="ym-payment-btn-block">
-            <div class="ym-input-icon-rub ym-display-none">
-                <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
+        <!-- ЧИСТЫЙ КОД ЮKASSA БЕЗ ЛЮБЫХ ИЗМЕНЕНИЙ -->
+        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
+        <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+            <div class="ym-hidden-inputs">
+                <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
             </div>
-            <button data-text="Заплатить" class="ym-btn-pay ym-result-price"><span class="ym-text-crop">Заплатить</span> <span class="ym-price-output"> 99,00&nbsp;₽</span></button><img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
-        </div>
-    <input name="shopId" type="hidden" value="1194993"></form>
-    <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+            <div class="ym-payment-btn-block">
+                <div class="ym-input-icon-rub ym-display-none">
+                    <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
+                </div>
+                <button data-text="Заплатить" class="ym-btn-pay ym-result-price">
+                    <span class="ym-text-crop">Заплатить</span> 
+                    <span class="ym-price-output"> 99,00&nbsp;₽</span>
+                </button>
+                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+            </div>
+            <input name="shopId" type="hidden" value="1194993">
+        </form>
+        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+        
+        <p style="margin-top: 20px; font-size: 14px; color: #666;">
+            После оплаты вы будете автоматически перенаправлены на страницу с файлом.
+        </p>
+    </div>
 
-    <p style="margin-top: 20px; font-size: 12px; color: #666;">
-        После оплаты вы будете перенаправлены на страницу с файлом
-    </p>
-
+    <!-- МИНИМАЛЬНЫЙ СКРИПТ ТОЛЬКО ДЛЯ product_id -->
     <script>
-        // Только сохраняем product_id
+        // Только устанавливаем product_id, ничего больше
         localStorage.setItem('paid_product_id', '1');
+        console.log('Product ID saved to localStorage');
     </script>
 </body>
 </html>
