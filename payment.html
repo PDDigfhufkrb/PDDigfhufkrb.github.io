@@ -5,34 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата - ПДД Шпаргалки</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .payment-container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        .product-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
 <body>
     <nav class="navbar navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="javascript:history.back()">
-                ← Назад к товару
-            </a>
-            <span class="navbar-text">
-                💳 Оплата
-            </span>
+            <a class="navbar-brand" href="javascript:history.back()">← Назад к товару</a>
+            <span class="navbar-text">💳 Оплата</span>
         </div>
     </nav>
 
-    <div class="container payment-container">
-        <div class="product-info">
+    <div class="container" style="max-width:500px; margin:50px auto; padding:20px">
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:20px">
             <h5 id="product-title">Загрузка...</h5>
             <p class="mb-1">Шпаргалка в формате PDF</p>
             <p class="h4 text-primary" id="product-price">99 ₽</p>
@@ -42,13 +25,12 @@
             <h4>Оплата через ЮKassу</h4>
         </div>
 
-        <!-- КОД ЮKASSA С ДИНАМИЧЕСКИМ product_id -->
+        <!-- ФОРМА ЮKASSA БЕЗ ИЗМЕНЕНИЙ -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
         <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
             <div class="ym-hidden-inputs">
-                <input name="shopSuccessURL" type="hidden" id="successUrlInput" value="">
+                <input name="shopSuccessURL" type="hidden" id="successUrlInput" value="https://pddigfhufkrb.github.io/success.html">
             </div>
-            
             <div class="ym-payment-btn-block">
                 <div class="ym-input-icon-rub ym-display-none">
                     <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99" id="sumInput">
@@ -65,57 +47,35 @@
     </div>
 
     <script>
-        // Получаем параметры из URL
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('product') || '1';
         const price = urlParams.get('price') || '99';
 
-        console.log('Оплата товара:', productId, 'Цена:', price);
-
-        // Сохраняем product_id в localStorage
         localStorage.setItem('last_paid_product', productId);
 
-        // Названия товаров
         const productNames = {
-            '1': 'Основные понятия и термины ПДД',
-            '2': 'Обгон и опережение',
-            '3': 'Остановка и стоянка',
-            '4': 'Проезд перекрестков',
-            '5': 'Скоростной режим',
-            '6': 'Действия при ДТП',
-            '7': 'Световые и звуковые сигналы',
-            '8': 'Пешеходные переходы',
-            '9': 'Начало движения и маневрирование',
-            '10': 'Железнодорожные переезды',
-            '11': 'Общие обязанности водителя'
+            '1':'Основные понятия и термины ПДД',
+            '2':'Обгон и опережение',
+            '3':'Остановка и стоянка',
+            '4':'Проезд перекрестков',
+            '5':'Скоростной режим',
+            '6':'Действия при ДТП',
+            '7':'Световые и звуковые сигналы',
+            '8':'Пешеходные переходы',
+            '9':'Начало движения и маневрирование',
+            '10':'Железнодорожные переезды',
+            '11':'Общие обязанности водителя'
         };
 
-        // ОБНОВЛЯЕМ ВСЕ ДАННЫЕ
-        function updatePaymentPage() {
-            const productName = productNames[productId] || 'Шпаргалка ПДД';
-            
-            // 1. Обновляем заголовок
-            document.getElementById('product-title').textContent = productName;
-            document.getElementById('product-price').textContent = price + ' ₽';
-            
-            // 2. Обновляем цену в форме
-            document.getElementById('sumInput').value = price;
-            
-            // 3. САМОЕ ВАЖНОЕ: Устанавливаем successUrl с product_id
-            document.getElementById('successUrlInput').value = 
-                `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
-            
-            // 4. Обновляем текст кнопки
-            const button = document.getElementById('payButton');
-            button.setAttribute('data-text', `Заплатить ${price} ₽`);
-            button.querySelector('.ym-text-crop').textContent = `Заплатить ${price} ₽`;
-            button.querySelector('.ym-price-output').textContent = ` ${price},00 ₽`;
+        document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
+        document.getElementById('product-price').textContent = price + ' ₽';
+        document.getElementById('sumInput').value = price;
+        document.getElementById('successUrlInput').value = 'https://pddigfhufkrb.github.io/success.html?product_id=' + productId;
 
-            console.log('Success URL установлен:', document.getElementById('successUrlInput').value);
-        }
-
-        // Запускаем при загрузке
-        document.addEventListener('DOMContentLoaded', updatePaymentPage);
+        const button = document.getElementById('payButton');
+        button.setAttribute('data-text', 'Заплатить ' + price + ' ₽');
+        button.querySelector('.ym-text-crop').textContent = 'Заплатить ' + price + ' ₽';
+        button.querySelector('.ym-price-output').textContent = ' ' + price + ',00 ₽';
     </script>
 </body>
 </html>
