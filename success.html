@@ -19,10 +19,7 @@
     </nav>
 
     <div class="container text-center my-5">
-        <div class="alert alert-success">
-            <h1>✅ Оплата прошла успешно!</h1>
-        </div>
-        
+        <div class="alert alert-success"><h1>✅ Оплата прошла успешно!</h1></div>
         <p class="lead">Спасибо за покупку! Ваша шпаргалка готова к скачиванию.</p>
         
         <div class="my-4">
@@ -32,10 +29,7 @@
         <div id="productInfo" class="mb-3"></div>
 
         <p class="text-muted small">Если возникли проблемы со скачиванием, свяжитесь с нами: <strong>example@pdd.ru</strong></p>
-
-        <div class="mt-4">
-            <a href="index.html" class="btn btn-outline-primary">Вернуться на главную</a>
-        </div>
+        <div class="mt-4"><a href="index.html" class="btn btn-outline-primary">Вернуться на главную</a></div>
     </div>
 
     <footer class="bg-light py-4 mt-5">
@@ -46,22 +40,13 @@
     </footer>
 
     <script>
-        // Названия товаров
         const productNames = {
-            '1': 'Основные понятия и термины',
-            '2': 'Обгон и опережение', 
-            '3': 'Остановка и стоянка',
-            '4': 'Проезд перекрестков',
-            '5': 'Скоростной режим',
-            '6': 'Действия при ДТП',
-            '7': 'Световые и звуковые сигналы',
-            '8': 'Пешеходные переходы',
-            '9': 'Начало движения и маневрирование',
-            '10': 'Железнодорожные переезды',
-            '11': 'Общие обязанности водителя'
+            '1': 'Основные понятия и термины', '2': 'Обгон и опережение', '3': 'Остановка и стоянка',
+            '4': 'Проезд перекрестков', '5': 'Скоростной режим', '6': 'Действия при ДТП',
+            '7': 'Световые и звуковые сигналы', '8': 'Пешеходные переходы', '9': 'Начало движения и маневрирование',
+            '10': 'Расположение ТС на проезжей части', '11': 'Общие обязанности водителя'
         };
 
-        // Ссылки на PDF
         const pdfFiles = {
             '1': 'https://drive.google.com/file/d/1kYFSr6S_DGIE74yMo0v8EJMbH__r3O6D/view?usp=sharing',
             '2': 'https://drive.google.com/file/d/1GoBl8agPglK6Y0MbYubxueeYqLCOU2Ze/view?usp=sharing',
@@ -77,22 +62,18 @@
         };
 
         function getProductId() {
-            // 1. Пробуем из URL
             const urlParams = new URLSearchParams(window.location.search);
             let productId = urlParams.get('product_id');
-            
-            // 2. Пробуем из localStorage
             if (!productId) {
-                productId = localStorage.getItem('last_paid_product');
+                productId = localStorage.getItem('paid_product_id');
+                if (productId) localStorage.removeItem('paid_product_id');
             }
-            
             return productId || '1';
         }
 
         function showProductInfo() {
             const productId = getProductId();
             const productInfo = document.getElementById('productInfo');
-            
             if (productNames[productId]) {
                 productInfo.innerHTML = `<div class="alert alert-info"><strong>Ваша шпаргалка:</strong> ${productNames[productId]}</div>`;
             }
@@ -101,7 +82,6 @@
         function downloadPDF() {
             const productId = getProductId();
             const pdfUrl = pdfFiles[productId];
-            
             if (pdfUrl) {
                 window.open(pdfUrl, '_blank');
             } else {
@@ -109,7 +89,6 @@
             }
         }
 
-        // Авто-скачивание через 2 секунды
         setTimeout(() => {
             if(confirm('Скачать вашу шпаргалку сейчас?')) {
                 downloadPDF();
