@@ -42,20 +42,13 @@
             <h4>Оплата через ЮKassу</h4>
         </div>
 
-        <!-- ТОЧНАЯ КОПИЯ КОДА ЮKASSA С ДИНАМИЧЕСКИМ successUrl -->
+        <!-- КОД ЮKASSA С ДИНАМИЧЕСКИМ product_id -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
         <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-            
-            <!-- ВАЖНО: сохраняем структуру ym-hidden-inputs -->
             <div class="ym-hidden-inputs">
-                <!-- МЕНЯЕМ ТОЛЬКО ЭТУ СТРОКУ -->
-                <input name="shopSuccessURL" type="hidden" id="successUrlInput" value="https://pddigfhufkrb.github.io/success.html">
-                <!-- СОХРАНЯЕМ ПУСТЫЕ DIV -->
-                <div></div>
-                <div></div>
+                <input name="shopSuccessURL" type="hidden" id="successUrlInput" value="">
             </div>
-
-            <!-- ОСТАВЛЯЕМ ВСЕ КАК В ОРИГИНАЛЕ -->
+            
             <div class="ym-payment-btn-block">
                 <div class="ym-input-icon-rub ym-display-none">
                     <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99" id="sumInput">
@@ -97,18 +90,18 @@
             '11': 'Общие обязанности водителя'
         };
 
-        // ОБНОВЛЯЕМ ДАННЫЕ
+        // ОБНОВЛЯЕМ ВСЕ ДАННЫЕ
         function updatePaymentPage() {
             const productName = productNames[productId] || 'Шпаргалка ПДД';
             
-            // 1. Обновляем заголовок товара
+            // 1. Обновляем заголовок
             document.getElementById('product-title').textContent = productName;
             document.getElementById('product-price').textContent = price + ' ₽';
             
             // 2. Обновляем цену в форме
             document.getElementById('sumInput').value = price;
             
-            // 3. САМОЕ ВАЖНОЕ: Обновляем successUrl с product_id
+            // 3. САМОЕ ВАЖНОЕ: Устанавливаем successUrl с product_id
             document.getElementById('successUrlInput').value = 
                 `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
             
@@ -121,10 +114,8 @@
             console.log('Success URL установлен:', document.getElementById('successUrlInput').value);
         }
 
-        // Запускаем при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePaymentPage();
-        });
+        // Запускаем при загрузке
+        document.addEventListener('DOMContentLoaded', updatePaymentPage);
     </script>
 </body>
 </html>
