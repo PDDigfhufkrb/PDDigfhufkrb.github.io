@@ -3,32 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата - Диагностика</title>
+    <title>Оплата шпаргалки ПДД</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .back-button {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Тест оплаты</h1>
+    <a href="product1.html" class="back-button">← Назад к товару</a>
+    
+    <h2>Оплата шпаргалки ПДД</h2>
+    <p><strong>Товар:</strong> Основные понятия и термины ПДД</p>
+    <p><strong>Цена:</strong> 99 ₽</p>
 
-    <!-- Тест 1: Прямая ссылка -->
-    <a href="https://yookassa.ru/integration/simplepay/payment?shopId=1194993&sum=99&customerNumber=test&orderNumber=test123" target="_blank">
-        🔗 Тест 1: Прямая ссылка на ЮKassу
-    </a>
+    <!-- ЧИСТЫЙ КОД ОТ ЮKASSЫ БЕЗ ИЗМЕНЕНИЙ -->
+    <br><link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
+    <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8" >
 
-    <br><br>
+        
+        
 
-    <!-- Тест 2: Простая форма -->
-    <form action="https://yookassa.ru/integration/simplepay/payment" method="POST">
-        <input type="hidden" name="shopId" value="1194993">
-        <input type="hidden" name="sum" value="99">
-        <input type="hidden" name="customerNumber" value="test_user">
-        <input type="hidden" name="orderNumber" value="test_order_456">
-        <button type="submit">🔍 Тест 2: Простая форма</button>
-    </form>
+        
+
+        <div class="ym-hidden-inputs">
+           <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
+           
+           
+        </div>
+
+        
+        
+        <div class="ym-payment-btn-block">
+            <div class="ym-input-icon-rub ym-display-none">
+                <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
+            </div>
+            <button data-text="Заплатить" class="ym-btn-pay ym-result-price"><span class="ym-text-crop">Заплатить</span> <span class="ym-price-output"> 99,00&nbsp;₽</span></button><img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+        </div>
+    <input name="shopId" type="hidden" value="1194993"></form>
+    <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+
+    <p style="margin-top: 20px; font-size: 12px; color: #666;">
+        После оплаты вы будете перенаправлены на страницу с файлом
+    </p>
 
     <script>
-        console.log('=== ДИАГНОСТИКА ЮKASSЫ ===');
-        console.log('ShopID:', '1194993');
-        console.log('URL:', 'https://yookassa.ru/integration/simplepay/payment');
-        console.log('Текущая страница:', window.location.href);
+        // Только сохраняем product_id
+        localStorage.setItem('paid_product_id', '1');
     </script>
 </body>
 </html>
