@@ -4,87 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата шпаргалки ПДД</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        #payment-form {
-            min-height: 400px;
-            margin: 20px 0;
-        }
-        .loading {
-            text-align: center;
-            padding: 50px;
-        }
-    </style>
-    <!-- Подключаем виджет ЮKassa -->
-    <script src="https://yookassa.ru/checkout-widget/v1/checkout-widget.js"></script>
+    <!-- НИКАКИХ ДОПОЛНИТЕЛЬНЫХ СТИЛЕЙ -->
 </head>
 <body>
-    <a href="product1.html">← Назад к товару</a>
-    <h1>Оплата шпаргалки ПДД</h1>
-    <p>Основные понятия и термины ПДД - 99 ₽</p>
+    <!-- МИНИМАЛЬНАЯ РАЗМЕТКА -->
+    <h2>Оплата шпаргалки ПДД</h2>
+    <p><strong>Товар:</strong> Основные понятия и термины ПДД</p>
+    <p><strong>Цена:</strong> 99 ₽</p>
 
-    <div id="payment-form"></div>
-    <div id="loading" class="loading">Загрузка платежной формы...</div>
+    <!-- ПРОСТАЯ ФОРМА БЕЗ СЛОЖНЫХ СКРИПТОВ -->
+    <form action="https://yookassa.ru/integration/simplepay/payment" method="post">
+        <!-- ОБЯЗАТЕЛЬНЫЕ ПОЛЯ -->
+        <input type="hidden" name="shopId" value="1194993">
+        <input type="hidden" name="sum" value="99">
+        <input type="hidden" name="customerNumber" value="customer_1">
+        <input type="hidden" name="orderNumber" value="order_pdd_1">
+        <input type="hidden" name="cps_email" value="customer@example.com">
+        <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
+        
+        <!-- ПРОСТАЯ КНОПКА -->
+        <button type="submit" style="
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            font-size: 18px; 
+            cursor: pointer;">
+            💳 Перейти к оплате на ЮKassу
+        </button>
+    </form>
+
+    <p><small>После нажатия кнопки вы перейдете на страницу ЮKassы для оплаты</small></p>
+
+    <!-- ТЕСТОВАЯ КНОПКА -->
+    <button onclick="quickBuy()" style="
+        background: #ffc107; 
+        color: black; 
+        border: none; 
+        padding: 10px 20px; 
+        margin-top: 10px;">
+        🔧 Тестовый режим (получить без оплаты)
+    </button>
 
     <script>
-        const API_SERVER = 'https://ваш-домен.timeweb.cloud'; // Замени на свой домен TimeWeb
+        // Сохраняем product_id
+        localStorage.setItem('paid_product_id', '1');
         
-        async function initializePayment() {
-            try {
-                // Создаем платеж через сервер
-                const response = await fetch(API_SERVER + '/create-payment.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        product_id: 1,
-                        price: 99
-                    })
-                });
-
-                const paymentData = await response.json();
-                
-                if (paymentData.confirmation && paymentData.confirmation.confirmation_token) {
-                    // Инициализируем виджет
-                    const checkout = new window.YooMoneyCheckoutWidget({
-                        confirmation_token: paymentData.confirmation.confirmation_token,
-                        return_url: 'https://pddigfhufkrb.github.io/success.html',
-                        error_callback: function(error) {
-                            console.error('Ошибка виджета:', error);
-                            alert('Ошибка платежной формы');
-                        }
-                    });
-
-                    // Отображаем виджет
-                    checkout.render('payment-form');
-                    document.getElementById('loading').style.display = 'none';
-                    
-                    // Сохраняем product_id
-                    localStorage.setItem('paid_product_id', '1');
-                } else {
-                    throw new Error('Не удалось создать платеж');
-                }
-            } catch (error) {
-                console.error('Ошибка:', error);
-                document.getElementById('loading').innerHTML = 
-                    '<p style="color: red;">Ошибка загрузки платежной формы. Используйте тестовый режим.</p>' +
-                    '<button onclick="quickBuy()">Тестовый режим</button>';
-            }
-        }
-
+        // Функция для тестового режима
         function quickBuy() {
             localStorage.setItem('paid_product_id', '1');
             window.location.href = 'success.html';
         }
-
-        // Запускаем при загрузке страницы
-        initializePayment();
     </script>
 </body>
 </html>
