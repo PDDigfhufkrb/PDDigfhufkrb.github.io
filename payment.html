@@ -11,66 +11,44 @@
             margin: 50px auto;
             padding: 20px;
         }
-        .product-info {
-            background: #f8f9fa;
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .btn-pay {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-            width: 100%;
-            margin: 10px 0;
-        }
-        .btn-test {
-            background: #ffc107;
-            color: black;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            width: 100%;
+            border-radius: 5px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
-    <a href="product1.html" style="text-decoration: none; color: #007bff;">← Назад к товару</a>
+    <a href="product1.html">← Назад к товару</a>
     
-    <div class="product-info">
-        <h2>Основные понятия и термины ПДД</h2>
-        <p><strong>Цена:</strong> 99 ₽</p>
+    <h1>Оплата шпаргалки ПДД</h1>
+    <p><strong>Товар:</strong> Основные понятия и термины ПДД</p>
+    <p><strong>Цена:</strong> 99 ₽</p>
+
+    <div class="instructions">
+        <h3>📋 Инструкция по оплате:</h3>
+        <ol>
+            <li>Нажмите на ссылку ниже</li>
+            <li>Вы перейдете на страницу ЮKassы</li>
+            <li>Оплатите 99 рублей</li>
+            <li>После оплаты вернетесь на сайт и получите файл</li>
+        </ol>
     </div>
 
-    <!-- ПРОСТАЯ ФОРМА ДЛЯ ОПЛАТЫ -->
-    <form action="https://yookassa.ru/integration/simplepay/payment" method="post">
-        <!-- ОБЯЗАТЕЛЬНЫЕ ПОЛЯ ДЛЯ ЮKASSY -->
-        <input type="hidden" name="shopId" value="1194993">
-        <input type="hidden" name="sum" value="99">
-        <input type="hidden" name="customerNumber" value="pdd_customer_1">
-        <input type="hidden" name="orderNumber" value="pdd_order_1">
-        <input type="hidden" name="cps_email" value="customer@example.com">
-        <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
-        
-        <button type="submit" class="btn-pay">
-            💳 Перейти к оплате 99 ₽
-        </button>
-    </form>
+    <!-- ПРЯМАЯ ССЫЛКА НА ЮKASSU -->
+    <a href="https://yookassa.ru/integration/simplepay/payment?shopId=1194993&sum=99&customerNumber=pdd_user_1&orderNumber=pdd_order_1&cps_email=customer@example.com&shopSuccessURL=https://pddigfhufkrb.github.io/success.html" 
+       style="display: block; text-align: center; background: #28a745; color: white; padding: 15px; text-decoration: none; font-size: 18px; border-radius: 5px;">
+        💳 Перейти к оплате на ЮKassу
+    </a>
 
-    <p style="text-align: center; color: #666; font-size: 14px;">
-        После нажатия кнопки вы перейдете на защищенную страницу ЮKassы для оплаты
-    </p>
-
-    <!-- ТЕСТОВАЯ КНОПКА -->
-    <button class="btn-test" onclick="quickBuy()">
+    <!-- Тестовый режим -->
+    <button onclick="quickBuy()" style="width: 100%; padding: 10px; margin-top: 10px; background: #ffc107; border: none; border-radius: 5px;">
         🔧 Тестовый режим (получить без оплаты)
     </button>
 
     <script>
-        // Сохраняем ID товара
         localStorage.setItem('paid_product_id', '1');
         
         function quickBuy() {
