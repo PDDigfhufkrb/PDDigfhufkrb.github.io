@@ -1,24 +1,67 @@
-<br><link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
-<form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8" >
-
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата шпаргалки ПДД</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .back-link {
+            display: block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .product-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <a href="product1.html" class="back-link">← Назад к товару</a>
     
-    
-
-    
-
-    <div class="ym-hidden-inputs">
-       <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
-       
-       
+    <div class="product-info">
+        <h2>Основные понятия и термины ПДД</h2>
+        <p><strong>Цена:</strong> 99 ₽</p>
     </div>
 
-    
-    
-    <div class="ym-payment-btn-block">
-        <div class="ym-input-icon-rub ym-display-none">
-            <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
+    <!-- Код от ЮKassa БЕЗ ИЗМЕНЕНИЙ -->
+    <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
+    <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+        <div class="ym-customer-info">
+            <div class="ym-block-title">О покупателе</div>
+            <input name="cps_email" class="ym-input" placeholder="Email" type="text" value="" required>
         </div>
-        <button data-text="Заплатить" class="ym-btn-pay ym-result-price"><span class="ym-text-crop">Заплатить</span> <span class="ym-price-output"> 99,00&nbsp;₽</span></button><img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
-    </div>
-<input name="shopId" type="hidden" value="1194993"></form>
-<script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+
+        <div class="ym-hidden-inputs">
+            <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
+        </div>
+
+        <div class="ym-payment-btn-block ym-before-line ym-align-space-between">
+            <div class="ym-input-icon-rub ym-display-none">
+                <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
+            </div>
+            <button data-text="Заплатить" class="ym-btn-pay ym-result-price">
+                <span class="ym-text-crop">Заплатить</span> 
+                <span class="ym-price-output"> 99,00&nbsp;₽</span>
+            </button>
+            <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+        </div>
+        <input name="shopId" type="hidden" value="1194993">
+    </form>
+    <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+
+    <script>
+        // Сохраняем product_id
+        localStorage.setItem('paid_product_id', '1');
+    </script>
+</body>
+</html>
