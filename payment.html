@@ -17,6 +17,12 @@
             border-radius: 10px;
             margin-bottom: 20px;
         }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -32,24 +38,24 @@
         </div>
 
         <!-- Форма оплаты -->
-        <div class="payment-form">
+        <div class="form-container">
             <form id="yookassaForm" action="https://yookassa.ru/integration/simplepay/payment" method="post">
-                <!-- Основные параметры -->
-                <input name="shopId" type="hidden" value="1194993">
-                <input name="scid" type="hidden" value="1194993">
-                <input name="customerNumber" type="hidden" id="customerNumber" value="">
-                
-                <!-- Сумма и описание -->
-                <input name="sum" type="hidden" id="paymentSum" value="99">
-                <input name="cps_email" type="hidden" id="customerEmail" value="">
+                <!-- ОБЯЗАТЕЛЬНЫЕ ПАРАМЕТРЫ -->
+                <input type="hidden" name="shopId" value="1194993">
+                <input type="hidden" name="scid" value="1194993"> <!-- Добавляем scid -->
+                <input type="hidden" name="sum" id="paymentSum" value="99">
+                <input type="hidden" name="customerNumber" id="customerNumber" value="">
+                <input type="hidden" name="orderNumber" id="orderNumber" value="">
+                <input type="hidden" name="cps_email" id="customerEmail" value="">
                 
                 <!-- URL перенаправления -->
-                <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
-                <input name="shopFailURL" type="hidden" value="https://pddigfhufkrb.github.io/payment.html">
+                <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
+                <input type="hidden" name="shopFailURL" value="https://pddigfhufkrb.github.io/payment.html">
                 
-                <!-- Дополнительные параметры для отслеживания -->
-                <input name="orderNumber" type="hidden" id="orderNumber" value="">
-                <input name="cms_name" type="hidden" value="github_pages">
+                <!-- ДОПОЛНИТЕЛЬНЫЕ ПАРАМЕТРЫ -->
+                <input type="hidden" name="paymentType" value="SP">
+                <input type="hidden" name="cms_name" value="api">
+                <input type="hidden" name="orderDetails" id="orderDetails" value="">
             </form>
 
             <!-- Поля для ввода данных -->
@@ -64,15 +70,21 @@
             </button>
             
             <div class="text-center mt-3">
-                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg" width="114" height="27" alt="ЮKassa">
+                <small class="text-muted">Оплата через</small><br>
+                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg" width="114" height="27" alt="ЮKassa" style="margin-top: 5px;">
             </div>
         </div>
 
         <div class="alert alert-info mt-4">
             <small>
-                <strong>Важно:</strong> После оплаты вы будете автоматически перенаправлены на страницу скачивания. 
-                Если перенаправление не произошло, обновите страницу или проверьте email.
+                <strong>Важно:</strong> После нажатия кнопки "Оплатить" вы будете перенаправлены на защищенную страницу ЮKassa для завершения платежа.
             </small>
+        </div>
+
+        <!-- Отладочная информация (можно удалить после тестирования) -->
+        <div class="mt-3" id="debugInfo" style="display: none;">
+            <h6>Отладочная информация:</h6>
+            <pre id="debugOutput"></pre>
         </div>
     </div>
 
@@ -114,14 +126,19 @@
             const orderNumber = 'pdd-' + productId + '-' + Date.now();
             document.getElementById('orderNumber').value = orderNumber;
             document.getElementById('customerNumber').value = orderNumber;
+            document.getElementById('orderDetails').value = product.name;
             
             // Сохраняем информацию о заказе в localStorage
             localStorage.setItem('last_order', JSON.stringify({
                 productId: productId,
                 productName: product.name,
                 orderNumber: orderNumber,
+                price: price,
                 timestamp: Date.now()
             }));
+
+            // Показываем отладочную информацию
+            showDebugInfo(product, orderNumber);
         }
 
         // Обработчик оплаты
@@ -136,6 +153,17 @@
             // Устанавливаем email
             document.getElementById('customerEmail').value = email;
             
+            // Обновляем отладочную информацию
+            updateDebugInfo(email);
+            
+            console.log('Отправка формы с параметрами:');
+            console.log('shopId:', document.querySelector('input[name="shopId"]').value);
+            console.log('scid:', document.querySelector('input[name="scid"]').value);
+            console.log('sum:', document.querySelector('input[name="sum"]').value);
+            console.log('customerNumber:', document.querySelector('input[name="customerNumber"]').value);
+            console.log('orderNumber:', document.querySelector('input[name="orderNumber"]').value);
+            console.log('cps_email:', document.querySelector('input[name="cps_email"]').value);
+            
             // Отправляем форму
             document.getElementById('yookassaForm').submit();
         });
@@ -144,6 +172,26 @@
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
+        }
+
+        // Показать отладочную информацию
+        function showDebugInfo(product, orderNumber) {
+            document.getElementById('debugInfo').style.display = 'block';
+            const debugOutput = `
+Product ID: ${productId}
+Product Name: ${product.name}
+Price: ${price} руб.
+Order Number: ${orderNumber}
+Shop ID: 1194993
+Success URL: https://pddigfhufkrb.github.io/success.html
+            `;
+            document.getElementById('debugOutput').textContent = debugOutput;
+        }
+
+        // Обновить отладочную информацию
+        function updateDebugInfo(email) {
+            const currentDebug = document.getElementById('debugOutput').textContent;
+            document.getElementById('debugOutput').textContent = currentDebug + `\nCustomer Email: ${email}\n--- FORM SUBMITTED ---`;
         }
 
         // Автозаполнение email из URL если есть
