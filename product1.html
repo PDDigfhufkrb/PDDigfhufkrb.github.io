@@ -11,28 +11,21 @@
             color: white;
             padding: 60px 0;
         }
-        .btn-free {
-            background: #ff6b35;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            color: white;
-        }
         .btn-buy {
             background: #28a745;
             border: none;
-            padding: 12px 25px;
-            font-size: 1rem;
+            padding: 15px 30px;
+            font-size: 1.2rem;
         }
         .feature-list li {
             margin-bottom: 0.5rem;
         }
-        .free-badge {
-            background: #ff6b35;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+        .yoomoney-payment-form {
+            margin: 20px 0;
+        }
+        .ym-btn-pay {
+            background: #28a745 !important;
+            border: none !important;
         }
     </style>
 </head>
@@ -53,16 +46,8 @@
     <div class="container my-5">
         <div class="row">
             <div class="col-lg-8">
-                <div class="free-badge d-inline-block mb-3">БЕСПЛАТНО ДЛЯ ТЕСТИРОВАНИЯ</div>
                 <h1 class="mb-3">Основные понятия и термины ПДД</h1>
-                <p class="lead">Помогите протестировать формат шпаргалок! Получите эту шпаргалку бесплатно и напишите отзыв.</p>
-                
-                <div class="alert alert-info">
-                    <strong>🎯 Ваша задача:</strong> скачайте шпаргалку, изучите и напишите в комментариях к посту:<br>
-                    - Понравился ли формат?<br>
-                    - Достаточно ли просто объяснены термины?<br>
-                    - Что можно улучшить?
-                </div>
+                <p class="lead">Ключ к пониманию всех правил дорожного движения. Вся сложная терминология простым языком.</p>
                 
                 <div class="mb-4">
                     <h4>📖 Что внутри шпаргалки?</h4>
@@ -82,23 +67,45 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card shadow border-warning">
+                <div class="card shadow">
                     <div class="card-body text-center">
                         <div class="mb-3">
-                            <span class="h3 text-success">БЕСПЛАТНО</span>
-                            <div class="text-muted small">для тестирования формата</div>
+                            <span class="h3 text-primary">99 ₽</span>
+                            <p class="text-muted small">или введите другую сумму</p>
                         </div>
                         
-                        <!-- Кнопка скачивания БЕСПЛАТНО -->
-                        <button onclick="downloadFreePDF()" class="btn btn-free btn-lg w-100 mb-3">
-                            📥 Получить бесплатно
+                        <!-- ФОРМА ЮKASSЫ -->
+                        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
+                        <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+                            <!-- Скрытые поля для нашей логики -->
+                            <input type="hidden" name="customerNumber" value="pdd_user">
+                            <input type="hidden" name="orderNumber" value="pdd_1">
+                            <input type="hidden" name="cps_email" value="customer@email.com">
+                            
+                            <div class="ym-payment-btn-block ym-align-space-between">
+                                <div class="ym-input-icon-rub">
+                                    <input name="sum" placeholder="99.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
+                                </div>
+                                <button data-text="Купить шпаргалку" class="ym-btn-pay ym-result-price">
+                                    <span class="ym-text-crop">Купить шпаргалку</span> 
+                                    <span class="ym-price-output"></span>
+                                </button>
+                                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.28.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+                            </div>
+                            <input name="shopId" type="hidden" value="1194993">
+                        </form>
+                        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.28.0"></script>
+
+                        <!-- Тестовая кнопка -->
+                        <button class="btn btn-warning btn-sm w-100 mt-3" onclick="quickBuy(1)">
+                            🔧 Тестовый режим (получить без оплаты)
                         </button>
                         
                         <small class="text-muted">
                             ✅ Мгновенная доставка<br>
                             ✅ PDF-формат<br>
                             ✅ Можно распечатать
-                        </small>
+                        </div>
                     </div>
                 </div>
 
@@ -117,10 +124,10 @@
                     <div class="card-body">
                         <h6>🔄 Как это работает?</h6>
                         <ol class="small">
-                            <li>Нажимаете "Получить бесплатно"</li>
-                            <li>Скачиваете PDF-файл</li>
-                            <li>Изучаете за 15 минут</li>
-                            <li>Пишете отзыв в комментариях</li>
+                            <li>Введите сумму (99 руб)</li>
+                            <li>Нажмите "Купить шпаргалку"</li>
+                            <li>Оплатите на странице ЮKassы</li>
+                            <li>Сразу получите PDF-файл</li>
                         </ol>
                     </div>
                 </div>
@@ -137,16 +144,22 @@
     </footer>
 
     <script>
-        function downloadFreePDF() {
-            // Ссылка на PDF файл "Основные понятия"
-            const pdfUrl = 'https://drive.google.com/file/d/1kYFSr6S_DGIE74yMo0v8EJMbH__r3O6D/view?usp=sharing';
-            
-            // Открываем PDF в новой вкладке
-            window.open(pdfUrl, '_blank');
-            
-            // Показываем благодарность
-            alert('Спасибо за участие в тестировании! 🚗\n\nПосле изучения шпаргалки напишите, пожалуйста, отзыв в комментариях к посту в ВК.\n\nВаше мнение поможет сделать шпаргалки еще лучше!');
+        // Тестовая функция
+        function quickBuy(productId) {
+            localStorage.setItem('paid_product_id', productId.toString());
+            window.location.href = 'success.html?product_id=' + productId;
         }
+
+        // Дополнительная логика для формы
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('.yoomoney-payment-form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    // Сохраняем ID товара перед переходом на оплату
+                    localStorage.setItem('paid_product_id', '1');
+                });
+            }
+        });
     </script>
 </body>
 </html>
