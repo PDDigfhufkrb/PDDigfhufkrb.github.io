@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тест самой простой формы</title>
+</head>
+<body>
+    <h1>Тест: Отправка формы в ЮKassу</h1>
+    
+    <form action="https://yookassa.ru/integration/simplepay/payment" method="post">
+        <input type="hidden" name="shopId" value="1194993">
+        <input type="hidden" name="sum" value="99">
+        <input type="hidden" name="customerNumber" value="test_user">
+        <input type="hidden" name="orderNumber" value="test_order_123">
+        <input type="hidden" name="cps_email" value="test@test.com">
+        <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
+        
+        <button type="submit" style="padding: 20px; font-size: 20px; background: red; color: white;">
+            🔥 ТЕСТ: Нажми чтобы перейти на ЮKassу
+        </button>
+    </form>
+
+    <script>
+        console.log('Тестовая страница загружена');
+    </script>
+</body>
+</html>
