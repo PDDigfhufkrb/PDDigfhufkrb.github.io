@@ -11,57 +11,80 @@
             margin: 0 auto;
             padding: 20px;
         }
-        .back-link {
-            display: block;
-            margin-bottom: 20px;
-            text-decoration: none;
-            color: #007bff;
+        #payment-form {
+            min-height: 400px;
+            margin: 20px 0;
         }
-        .product-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .loading {
+            text-align: center;
+            padding: 50px;
         }
     </style>
+    <!-- Подключаем виджет ЮKassa -->
+    <script src="https://yookassa.ru/checkout-widget/v1/checkout-widget.js"></script>
 </head>
 <body>
-    <a href="product1.html" class="back-link">← Назад к товару</a>
-    
-    <div class="product-info">
-        <h2>Основные понятия и термины ПДД</h2>
-        <p><strong>Цена:</strong> 99 ₽</p>
-    </div>
+    <a href="product1.html">← Назад к товару</a>
+    <h1>Оплата шпаргалки ПДД</h1>
+    <p>Основные понятия и термины ПДД - 99 ₽</p>
 
-    <!-- Код от ЮKassa БЕЗ ИЗМЕНЕНИЙ -->
-    <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
-    <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-        <div class="ym-customer-info">
-            <div class="ym-block-title">О покупателе</div>
-            <input name="cps_email" class="ym-input" placeholder="Email" type="text" value="" required>
-        </div>
-
-        <div class="ym-hidden-inputs">
-            <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
-        </div>
-
-        <div class="ym-payment-btn-block ym-before-line ym-align-space-between">
-            <div class="ym-input-icon-rub ym-display-none">
-                <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
-            </div>
-            <button data-text="Заплатить" class="ym-btn-pay ym-result-price">
-                <span class="ym-text-crop">Заплатить</span> 
-                <span class="ym-price-output"> 99,00&nbsp;₽</span>
-            </button>
-            <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
-        </div>
-        <input name="shopId" type="hidden" value="1194993">
-    </form>
-    <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+    <div id="payment-form"></div>
+    <div id="loading" class="loading">Загрузка платежной формы...</div>
 
     <script>
-        // Сохраняем product_id
-        localStorage.setItem('paid_product_id', '1');
+        const API_SERVER = 'https://ваш-домен.timeweb.cloud'; // Замени на свой домен TimeWeb
+        
+        async function initializePayment() {
+            try {
+                // Создаем платеж через сервер
+                const response = await fetch(API_SERVER + '/create-payment.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        product_id: 1,
+                        price: 99
+                    })
+                });
+
+                const paymentData = await response.json();
+                
+                if (paymentData.confirmation && paymentData.confirmation.confirmation_token) {
+                    // Инициализируем виджет
+                    const checkout = new window.YooMoneyCheckoutWidget({
+                        confirmation_token: paymentData.confirmation.confirmation_token,
+                        return_url: 'https://pddigfhufkrb.github.io/success.html',
+                        error_callback: function(error) {
+                            console.error('Ошибка виджета:', error);
+                            alert('Ошибка платежной формы');
+                        }
+                    });
+
+                    // Отображаем виджет
+                    checkout.render('payment-form');
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    // Сохраняем product_id
+                    localStorage.setItem('paid_product_id', '1');
+                } else {
+                    throw new Error('Не удалось создать платеж');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('loading').innerHTML = 
+                    '<p style="color: red;">Ошибка загрузки платежной формы. Используйте тестовый режим.</p>' +
+                    '<button onclick="quickBuy()">Тестовый режим</button>';
+            }
+        }
+
+        function quickBuy() {
+            localStorage.setItem('paid_product_id', '1');
+            window.location.href = 'success.html';
+        }
+
+        // Запускаем при загрузке страницы
+        initializePayment();
     </script>
 </body>
 </html>
