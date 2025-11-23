@@ -3,86 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата шпаргалки ПДД</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .payment-container {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        .product-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-    </style>
+    <title>Оплата - Диагностика</title>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="javascript:history.back()">
-                ← Назад
-            </a>
-            <span class="navbar-text">
-                💳 Оплата
-            </span>
-        </div>
-    </nav>
+    <h1>Тест оплаты</h1>
 
-    <div class="container payment-container">
-        <!-- Информация о товаре -->
-        <div class="product-card">
-            <h5>Основные понятия и термины ПДД</h5>
-            <p class="text-muted mb-2">Шпаргалка в формате PDF</p>
-            <div class="h4 text-primary">99 ₽</div>
-        </div>
+    <!-- Тест 1: Прямая ссылка -->
+    <a href="https://yookassa.ru/integration/simplepay/payment?shopId=1194993&sum=99&customerNumber=test&orderNumber=test123" target="_blank">
+        🔗 Тест 1: Прямая ссылка на ЮKassу
+    </a>
 
-        <!-- СКРЫТАЯ ФОРМА -->
-        <form id="yookassaForm" method="POST" action="https://yookassa.ru/integration/simplepay/payment" style="display: none;">
-            <input name="shopId" value="1194993">
-            <input name="sum" value="99">
-            <input name="customerNumber" value="pdd_customer">
-            <input name="orderNumber" value="pdd_order_1">
-            <input name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
-        </form>
+    <br><br>
 
-        <!-- Кнопка оплаты -->
-        <button class="btn btn-success btn-lg w-100 mb-3" onclick="submitPayment()">
-            💳 Оплатить 99 ₽
-        </button>
-
-        <!-- Тестовая кнопка -->
-        <button class="btn btn-outline-warning w-100" onclick="quickBuy()">
-            🔧 Тестовый режим
-        </button>
-    </div>
+    <!-- Тест 2: Простая форма -->
+    <form action="https://yookassa.ru/integration/simplepay/payment" method="POST">
+        <input type="hidden" name="shopId" value="1194993">
+        <input type="hidden" name="sum" value="99">
+        <input type="hidden" name="customerNumber" value="test_user">
+        <input type="hidden" name="orderNumber" value="test_order_456">
+        <button type="submit">🔍 Тест 2: Простая форма</button>
+    </form>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('product') || '1';
-
-        function submitPayment() {
-            // Сохраняем product_id
-            localStorage.setItem('paid_product_id', productId);
-            
-            // Обновляем orderNumber чтобы был уникальным
-            const orderNumber = 'pdd_' + productId + '_' + Date.now();
-            document.querySelector('input[name="orderNumber"]').value = orderNumber;
-            
-            // Отправляем форму
-            document.getElementById('yookassaForm').submit();
-        }
-
-        function quickBuy() {
-            localStorage.setItem('paid_product_id', productId);
-            window.location.href = 'success.html?product_id=' + productId;
-        }
-
-        // Автоматически сохраняем product_id
-        localStorage.setItem('paid_product_id', productId);
+        console.log('=== ДИАГНОСТИКА ЮKASSЫ ===');
+        console.log('ShopID:', '1194993');
+        console.log('URL:', 'https://yookassa.ru/integration/simplepay/payment');
+        console.log('Текущая страница:', window.location.href);
     </script>
 </body>
 </html>
