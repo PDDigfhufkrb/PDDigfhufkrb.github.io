@@ -5,41 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата - ПДД Шпаргалки</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .payment-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h2 class="text-center mb-4">Оплата шпаргалки</h2>
-                
-                <!-- ПРОСТЕЙШАЯ ФОРМА ЮKASSA С ВСЕМИ ОБЯЗАТЕЛЬНЫМИ ПОЛЯМИ -->
-                <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css">
-                <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post">
-                    <!-- ОБЯЗАТЕЛЬНЫЕ ПОЛЯ -->
-                    <input type="hidden" name="shopId" value="1194993">
-                    <input type="hidden" name="sum" value="99">
-                    <input type="hidden" name="customerNumber" value="user_001">
-                    <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
-                    
-                    <!-- ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ -->
-                    <div class="ym-customer-info">
-                        <div class="ym-block-title">О покупателе</div>
-                        <input name="cps_email" class="ym-input" placeholder="Email для чека" type="email" required>
-                    </div>
+    <nav class="navbar navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                ← Назад к шпаргалкам
+            </a>
+            <span class="navbar-text">💳 Оплата</span>
+        </div>
+    </nav>
 
-                    <!-- КНОПКА ОПЛАТЫ -->
-                    <div class="ym-payment-btn-block">
-                        <button type="submit" class="ym-btn-pay">
-                            <span class="ym-text-crop">Заплатить 99 ₽</span>
-                        </button>
-                    </div>
-                </form>
-                <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js"></script>
+    <div class="container payment-container">
+        <div class="text-center mb-4">
+            <h4>Оплата шпаргалки ПДД</h4>
+            <p class="text-muted">99 рублей</p>
+        </div>
 
-                <div class="text-center mt-3">
-                    <a href="index.html" class="btn btn-outline-secondary">Назад к шпаргалкам</a>
-                </div>
+        <!-- ТОЧНАЯ КОПИЯ ФОРМЫ ИЗ ДОКУМЕНТАЦИИ ЮKASSA -->
+        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css">
+        <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+            
+            <!-- БЛОК С EMAIL (ОБЯЗАТЕЛЬНО ДЛЯ ЧЕКА) -->
+            <div class="ym-customer-info">
+                <div class="ym-block-title">Email для чека</div>
+                <input name="cps_email" class="ym-input" placeholder="your@email.com" type="email" value="" required>
             </div>
+
+            <!-- СКРЫТЫЕ ПОЛЯ -->
+            <div class="ym-hidden-inputs">
+                <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
+                <input name="customerNumber" type="hidden" value="pdd_user">
+            </div>
+
+            <!-- БЛОК ОПЛАТЫ -->
+            <div class="ym-payment-btn-block ym-align-space-between">
+                <div class="ym-input-icon-rub ym-display-none">
+                    <input name="sum" value="99" type="hidden">
+                </div>
+                <button type="submit" class="ym-btn-pay ym-result-price">
+                    <span class="ym-text-crop">Заплатить</span>
+                    <span class="ym-price-output">99,00 ₽</span>
+                </button>
+                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg" class="ym-logo" width="114" height="27" alt="ЮKassa">
+            </div>
+            
+            <!-- ID МАГАЗИНА -->
+            <input name="shopId" type="hidden" value="1194993">
+        </form>
+        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js"></script>
+
+        <div class="text-center mt-4">
+            <a href="index.html" class="btn btn-outline-secondary">Отмена</a>
         </div>
     </div>
 </body>
