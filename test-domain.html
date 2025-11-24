@@ -1,27 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Тест домена</title>
+    <title>Оплата - ПДД Шпаргалки</title>
 </head>
 <body>
-    <h3>Тест 1: Без слеша</h3>
-    <form action="https://yookassa.ru/integration/simplepay/payment" method="post">
+    <h2>Оплата шпаргалки ПДД</h2>
+    
+    <!-- Форма с минимальными параметрами -->
+    <form action="https://yookassa.ru/integration/simplepay/payment" method="POST">
         <input type="hidden" name="shopId" value="1194993">
-        <input type="hidden" name="sum" value="1">
-        <input type="hidden" name="customerNumber" value="test1">
-        <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
-        <input type="email" name="cps_email" value="test@test.com" required>
-        <button type="submit">Тест: pddigfhufkrb.github.io</button>
-    </form>
-
-    <h3>Тест 2: Со слешем</h3>
-    <form action="https://yookassa.ru/integration/simplepay/payment" method="post">
-        <input type="hidden" name="shopId" value="1194993">
-        <input type="hidden" name="sum" value="1">
-        <input type="hidden" name="customerNumber" value="test2">
-        <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
-        <input type="email" name="cps_email" value="test@test.com" required>
-        <button type="submit">Тест: pddigfhufkrb.github.io/</button>
+        <input type="hidden" name="sum" value="99">
+        <input type="hidden" name="customerNumber" value="customer_<?php echo time(); ?>">
+        
+        <!-- ВАЖНО: Указываем return_url вместо shopSuccessURL -->
+        <input type="hidden" name="return_url" value="https://pddigfhufkrb.github.io/success.html">
+        
+        <p>Email для чека: <input type="email" name="cps_email" required></p>
+        
+        <button type="submit">Оплатить 99 руб.</button>
     </form>
 </body>
 </html>
