@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тест домена</title>
+</head>
+<body>
+    <h3>Тест 1: Без слеша</h3>
+    <form action="https://yookassa.ru/integration/simplepay/payment" method="post">
+        <input type="hidden" name="shopId" value="1194993">
+        <input type="hidden" name="sum" value="1">
+        <input type="hidden" name="customerNumber" value="test1">
+        <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
+        <input type="email" name="cps_email" value="test@test.com" required>
+        <button type="submit">Тест: pddigfhufkrb.github.io</button>
+    </form>
+
+    <h3>Тест 2: Со слешем</h3>
+    <form action="https://yookassa.ru/integration/simplepay/payment" method="post">
+        <input type="hidden" name="shopId" value="1194993">
+        <input type="hidden" name="sum" value="1">
+        <input type="hidden" name="customerNumber" value="test2">
+        <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
+        <input type="email" name="cps_email" value="test@test.com" required>
+        <button type="submit">Тест: pddigfhufkrb.github.io/</button>
+    </form>
+</body>
+</html>
