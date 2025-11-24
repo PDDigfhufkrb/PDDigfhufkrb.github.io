@@ -5,102 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата - ПДД Шпаргалки</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .payment-container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        .product-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="javascript:history.back()">
-                ← Назад к товару
-            </a>
-            <span class="navbar-text">
-                💳 Оплата
-            </span>
-        </div>
-    </nav>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center mb-4">Оплата шпаргалки</h2>
+                
+                <!-- ПРОСТЕЙШАЯ ФОРМА ЮKASSA С ВСЕМИ ОБЯЗАТЕЛЬНЫМИ ПОЛЯМИ -->
+                <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css">
+                <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post">
+                    <!-- ОБЯЗАТЕЛЬНЫЕ ПОЛЯ -->
+                    <input type="hidden" name="shopId" value="1194993">
+                    <input type="hidden" name="sum" value="99">
+                    <input type="hidden" name="customerNumber" value="user_001">
+                    <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
+                    
+                    <!-- ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ -->
+                    <div class="ym-customer-info">
+                        <div class="ym-block-title">О покупателе</div>
+                        <input name="cps_email" class="ym-input" placeholder="Email для чека" type="email" required>
+                    </div>
 
-    <div class="container payment-container">
-        <div class="product-info">
-            <h5 id="product-title">Основные понятия и термины ПДД</h5>
-            <p class="mb-1">Шпаргалка в формате PDF</p>
-            <p class="h4 text-primary">99 ₽</p>
-        </div>
+                    <!-- КНОПКА ОПЛАТЫ -->
+                    <div class="ym-payment-btn-block">
+                        <button type="submit" class="ym-btn-pay">
+                            <span class="ym-text-crop">Заплатить 99 ₽</span>
+                        </button>
+                    </div>
+                </form>
+                <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js"></script>
 
-        <div class="text-center mb-4">
-            <h4>Оплата через ЮKassу</h4>
-        </div>
-
-        <!-- ФОРМА ЮKASSY С ИСПРАВЛЕНИЯМИ -->
-        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
-        <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-            
-            <!-- ИСПРАВЛЕНО: правильное имя параметра shopSuccessURL -->
-            <input type="hidden" name="shopSuccessURL" id="successUrl" value="">
-            
-            <div class="ym-payment-btn-block">
-                <div class="ym-input-icon-rub ym-display-none">
-                    <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99" id="sumInput">
+                <div class="text-center mt-3">
+                    <a href="index.html" class="btn btn-outline-secondary">Назад к шпаргалкам</a>
                 </div>
-                <button data-text="Заплатить" class="ym-btn-pay ym-result-price" id="payButton">
-                    <span class="ym-text-crop">Заплатить</span> 
-                    <span class="ym-price-output"> 99,00&nbsp;₽</span>
-                </button>
-                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
             </div>
-            <input name="shopId" type="hidden" value="1194993">
-        </form>
-        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+        </div>
     </div>
-
-    <script>
-        // Получаем параметры из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('product') || '1';
-        const price = urlParams.get('price') || '99';
-
-        // Сохраняем product_id в localStorage ПЕРЕД оплатой
-        localStorage.setItem('last_paid_product', productId);
-
-        // Устанавливаем successUrl с product_id
-        document.getElementById('successUrl').value = 
-            `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
-
-        // Обновляем цену в форме
-        document.getElementById('sumInput').value = price;
-        
-        // Обновляем текст кнопки
-        const button = document.getElementById('payButton');
-        button.setAttribute('data-text', `Заплатить ${price} ₽`);
-        button.querySelector('.ym-text-crop').textContent = `Заплатить ${price} ₽`;
-        button.querySelector('.ym-price-output').textContent = ` ${price},00 ₽`;
-
-        // Обновляем информацию о товаре
-        const productNames = {
-            '1': 'Основные понятия и термины ПДД',
-            '2': 'Обгон и опережение',
-            '3': 'Остановка и стоянка',
-            '4': 'Проезд перекрестков',
-            '5': 'Скоростной режим',
-            '6': 'Действия при ДТП',
-            '7': 'Световые и звуковые сигналы',
-            '8': 'Пешеходные переходы',
-            '9': 'Начало движения и маневрирование',
-            '10': 'Железнодорожные переезды',
-            '11': 'Обязанности водителя'
-        };
-        document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
-    </script>
 </body>
 </html>
