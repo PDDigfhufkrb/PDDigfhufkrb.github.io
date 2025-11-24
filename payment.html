@@ -17,10 +17,6 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
-        .test-mode {
-            border-left: 4px solid #ffc107;
-            background: #fff8e1;
-        }
     </style>
 </head>
 <body>
@@ -37,41 +33,39 @@
 
     <div class="container payment-container">
         <div class="product-info">
-            <h5 id="product-title">Основные понятия и термины ПДД</h5>
-            <p class="mb-1">Шпаргалка в формате PDF</p>
+            <h5>Шпаргалка ПДД</h5>
+            <p class="mb-1">Формат: PDF</p>
             <p class="h4 text-primary">99 ₽</p>
         </div>
 
         <div class="text-center mb-4">
             <h4>Оплата через ЮKassу</h4>
-            <p class="text-muted small">Безопасная оплата через официального партнера</p>
         </div>
 
-        <!-- УЛУЧШЕННАЯ ФОРМА ЮKASSY -->
+        <!-- СТАНДАРТНАЯ ФОРМА ЮKASSA ИЗ ДОКУМЕНТАЦИИ -->
         <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
         <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
             
-            <!-- ОБЯЗАТЕЛЬНЫЕ ПОЛЯ ИЗ РАБОЧЕГО КОДА -->
-            <input type="hidden" name="customerNumber" id="customerNumber" value="">
-            <input type="hidden" name="orderNumber" id="orderNumber" value="">
-            
-            <!-- УЛУЧШЕНИЕ: shopSuccessURL с product_id -->
-            <input type="hidden" name="shopSuccessURL" id="successUrl" value="">
-            
-            <!-- БЛОК ДЛЯ EMAIL -->
+            <!-- БЛОК ДЛЯ EMAIL (ОБЯЗАТЕЛЬНО) -->
             <div class="ym-customer-info">
                 <div class="ym-block-title">Email для чека</div>
-                <input name="cps_email" class="ym-input" placeholder="ваш@email.com" type="email" value="" id="emailInput" required>
+                <input name="cps_email" class="ym-input" placeholder="ваш@email.com" type="email" value="" required>
+            </div>
+
+            <!-- СКРЫТЫЕ ПОЛЯ -->
+            <div class="ym-hidden-inputs">
+                <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
+                <input name="customerNumber" type="hidden" value="pdd_customer">
             </div>
 
             <!-- БЛОК ОПЛАТЫ -->
-            <div class="ym-payment-btn-block ym-align-space-between">
-                <div class="ym-input-icon-rub">
-                    <input name="sum" placeholder="99.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99" id="sumInput">
+            <div class="ym-payment-btn-block">
+                <div class="ym-input-icon-rub ym-display-none">
+                    <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
                 </div>
-                <button type="submit" data-text="Оплатить" class="ym-btn-pay ym-result-price" id="payButton">
-                    <span class="ym-text-crop">Оплатить</span> 
-                    <span class="ym-price-output" id="priceOutput">99,00 ₽</span>
+                <button data-text="Заплатить" class="ym-btn-pay ym-result-price">
+                    <span class="ym-text-crop">Заплатить</span>
+                    <span class="ym-price-output"> 99,00&nbsp;₽</span>
                 </button>
                 <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
             </div>
@@ -80,69 +74,9 @@
         </form>
         <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
 
-        <!-- ТЕСТОВЫЙ РЕЖИМ -->
-        <div class="mt-4 p-3 test-mode">
-            <h6>🔧 Тестовый режим</h6>
-            <p class="small mb-2">Для проверки работы без оплаты:</p>
-            <button onclick="testSuccess()" class="btn btn-warning btn-sm">
-                Тестовый переход к файлу
-            </button>
+        <div class="text-center mt-4">
+            <a href="index.html" class="btn btn-outline-secondary">Отмена</a>
         </div>
     </div>
-
-    <script>
-        // Получаем параметры из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('product') || '1';
-        const price = urlParams.get('price') || '99';
-
-        // УЛУЧШЕНИЕ: Сохраняем product_id в localStorage ПЕРЕД оплатой
-        localStorage.setItem('last_paid_product', productId);
-
-        // УЛУЧШЕНИЕ: Генерируем уникальные ID
-        const timestamp = Date.now();
-        document.getElementById('customerNumber').value = 'pdd_user_' + timestamp;
-        document.getElementById('orderNumber').value = 'order_pdd_' + productId + '_' + timestamp;
-        
-        // УЛУЧШЕНИЕ: Динамический successUrl с product_id
-        document.getElementById('successUrl').value = 
-            `https://pddigfhufkrb.github.io/success.html?product_id=${productId}`;
-
-        // Обновляем цену
-        document.getElementById('sumInput').value = price;
-        document.getElementById('priceOutput').textContent = price + ',00 ₽';
-
-        // Обновляем информацию о товаре
-        const productNames = {
-            '1': 'Основные понятия и термины ПДД',
-            '2': 'Обгон и опережение',
-            '3': 'Остановка и стоянка',
-            '4': 'Проезд перекрестков',
-            '5': 'Скоростной режим', 
-            '6': 'Действия при ДТП',
-            '7': 'Световые и звуковые сигналы',
-            '8': 'Пешеходные переходы',
-            '9': 'Начало движения и маневрирование',
-            '10': 'Железнодорожные переезды',
-            '11': 'Обязанности водителя'
-        };
-        document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
-
-        // УЛУЧШЕНИЕ: Тестовый режим
-        function testSuccess() {
-            localStorage.setItem('last_paid_product', productId);
-            window.location.href = `success.html?product_id=${productId}&test=true`;
-        }
-
-        // УЛУЧШЕНИЕ: Валидация email перед отправкой
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const email = document.getElementById('emailInput').value;
-            if (!email || !email.includes('@')) {
-                e.preventDefault();
-                alert('Пожалуйста, введите корректный email');
-                return false;
-            }
-        });
-    </script>
 </body>
 </html>
