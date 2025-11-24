@@ -1,35 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Оплата - ПДД Шпаргалки</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .payment-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .product-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div id="payment-container">
-        <h2>Оплата шпаргалки ПДД</h2>
-        <input type="email" id="email" placeholder="Email для чека" required>
-        <button onclick="redirectToYooKassa()">Оплатить 99 ₽</button>
+    <nav class="navbar navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="javascript:history.back()">
+                ← Назад к товару
+            </a>
+            <span class="navbar-text">
+                💳 Оплата
+            </span>
+        </div>
+    </nav>
+
+    <div class="container payment-container">
+        <div class="product-info">
+            <h5 id="product-title">Основные понятия и термины ПДД</h5>
+            <p class="mb-1">Шпаргалка в формате PDF</p>
+            <p class="h4 text-primary">99 ₽</p>
+        </div>
+
+        <div class="text-center mb-4">
+            <h4>Оплата через ЮKassу</h4>
+        </div>
+
+        <!-- ТОЧНАЯ РАБОЧАЯ ФОРМА ЮKASSY -->
+        <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.28.0">
+        <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
+            <input type="hidden" name="customerNumber" value="pdd_customer">
+            <input type="hidden" name="orderNumber" value="order_pdd_1">
+            <input type="hidden" name="cps_email" value="customer@email.com">
+            
+            <div class="ym-payment-btn-block ym-align-space-between">
+                <div class="ym-input-icon-rub">
+                    <input name="sum" placeholder="99.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99" id="sumInput">
+                </div>
+                <button data-text="Оплатить" class="ym-btn-pay ym-result-price" id="payButton">
+                    <span class="ym-text-crop">Оплатить</span> 
+                    <span class="ym-price-output"></span>
+                </button>
+                <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.28.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+            </div>
+            <input name="shopId" type="hidden" value="1194993">
+        </form>
+        <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.28.0"></script>
     </div>
 
     <script>
-        function redirectToYooKassa() {
-            const email = document.getElementById('email').value;
-            if (!email) {
-                alert('Введите email');
-                return;
-            }
+        // Получаем параметры из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('product') || '1';
+        const price = urlParams.get('price') || '99';
 
-            // Формируем URL с параметрами
-            const params = new URLSearchParams({
-                shopId: '1194993',
-                sum: '99',
-                customerNumber: 'user_' + Date.now(),
-                shopSuccessURL: 'https://pddigfhufkrb.github.io/success.html',
-                cps_email: email
-            });
+        // Сохраняем product_id в localStorage
+        localStorage.setItem('last_paid_product', productId);
 
-            // Переходим напрямую к ЮKassa
-            window.location.href = `https://yookassa.ru/integration/simplepay/payment?${params}`;
-        }
+        // Обновляем цену
+        document.getElementById('sumInput').value = price;
+
+        // Обновляем orderNumber
+        document.querySelector('input[name="orderNumber"]').value = 'order_pdd_' + productId;
+
+        // Обновляем информацию о товаре
+        const productNames = {
+            '1': 'Основные понятия и термины ПДД',
+            '2': 'Обгон и опережение',
+            '3': 'Остановка и стоянка',
+            '4': 'Проезд перекрестков', 
+            '5': 'Скоростной режим',
+            '6': 'Действия при ДТП',
+            '7': 'Световые и звуковые сигналы',
+            '8': 'Пешеходные переходы',
+            '9': 'Начало движения и маневрирование',
+            '10': 'Железнодорожные переезды',
+            '11': 'Обязанности водителя'
+        };
+        document.getElementById('product-title').textContent = productNames[productId] || 'Шпаргалка ПДД';
     </script>
 </body>
 </html>
