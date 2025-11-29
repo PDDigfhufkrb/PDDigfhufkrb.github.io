@@ -1,34 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Тест оплаты</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата шпаргалки ПДД</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .back-link {
+            display: block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .product-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .email-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f8ff;
+            border-radius: 8px;
+        }
+        .email-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .test-mode {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background: #ffc107;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h2>Тест оплаты ЮKassa</h2>
+    <a href="product1.html" class="back-link">← Назад к товару</a>
     
-    <!-- ТОЛЬКО КОД ЮKASSA БЕЗ ИЗМЕНЕНИЙ -->
-    <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.30.0">
-    <form target="_blank" class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
-        
-        <div class="ym-customer-info">
-            <div class="ym-block-title">Email для чека</div>
-            <input name="cps_email" class="ym-input" placeholder="ваш@email.com" type="email" required>
-        </div>
+    <div class="product-info">
+        <h2>Основные понятия и термины ПДД</h2>
+        <p><strong>Цена:</strong> 99 ₽</p>
+        <p><small>После оплаты файл будет отправлен на указанный email</small></p>
+    </div>
 
+    <!-- Секция для сбора email -->
+    <div class="email-section">
+        <label for="customerEmail"><strong>Email для отправки файла:</strong></label>
+        <input type="email" id="customerEmail" class="email-input" placeholder="your@email.com" required>
+        <p><small>На этот email будет отправлена ссылка для скачивания</small></p>
+    </div>
+
+    <!-- ФОРМА ЮKASSA SIMPLEPAY -->
+    <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.30.0">
+    <form target="_blank" class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8" onsubmit="return validateForm()">
+
+        <!-- Скрытые поля для передачи дополнительных данных -->
         <div class="ym-hidden-inputs">
             <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
-            <input name="customerNumber" type="hidden" value="test_customer">
+            <input name="cps_email" id="cps_email_field" type="hidden" value="">
+            <!-- Можно добавить comment для идентификации платежа -->
+            <input name="comment" type="hidden" value="Шпаргалка ПДД: Основные понятия">
         </div>
 
-        <input type="hidden" name="orderDetails" value='{"items":[{"description":"Шпаргалка ПДД","quantity":"1","amount":{"value":"99.00","currency":"RUB"}}]}'>
-
+        <!-- Блок с кнопкой оплаты -->
         <div class="ym-payment-btn-block">
             <div class="ym-input-icon-rub ym-display-none">
                 <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
             </div>
-            <button data-text="Заплатить" class="ym-btn-pay ym-result-price">
-                <span class="ym-text-crop">Заплатить</span>
+            <button type="submit" data-text="Заплатить" class="ym-btn-pay ym-result-price">
+                <span class="ym-text-crop">Заплатить</span> 
                 <span class="ym-price-output"> 99,00&nbsp;₽</span>
             </button>
             <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.30.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
@@ -37,5 +91,69 @@
         <input name="shopId" type="hidden" value="1194993">
     </form>
     <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.30.0"></script>
+
+    <!-- Тестовый режим -->
+    <button onclick="quickBuy()" class="test-mode">
+        🔧 Тестовый режим (получить без оплаты)
+    </button>
+
+    <script>
+        // Данные товара
+        const product = {
+            id: '1',
+            name: 'Основные понятия и термины ПДД',
+            price: 99,
+            driveLink: 'https://drive.google.com/file/d/your-file-id-1/view?usp=sharing'
+        };
+
+        function validateForm() {
+            const email = document.getElementById('customerEmail').value;
+            
+            // Проверяем email
+            if (!email || !email.includes('@')) {
+                alert('Пожалуйста, введите корректный email адрес');
+                return false;
+            }
+
+            // Сохраняем данные в localStorage
+            localStorage.setItem('paid_product_id', product.id);
+            localStorage.setItem('customer_email', email);
+            localStorage.setItem('product_name', product.name);
+            localStorage.setItem('product_drive_link', product.driveLink);
+
+            // Устанавливаем email в скрытое поле формы (если нужно для ЮKassa)
+            document.getElementById('cps_email_field').value = email;
+
+            console.log('Данные для оплаты:', {
+                productId: product.id,
+                email: email,
+                product: product.name
+            });
+
+            return true;
+        }
+
+        function quickBuy() {
+            const email = document.getElementById('customerEmail').value;
+            
+            if (!email || !email.includes('@')) {
+                alert('Пожалуйста, введите корректный email для тестового режима');
+                return;
+            }
+
+            // Сохраняем данные
+            localStorage.setItem('paid_product_id', product.id);
+            localStorage.setItem('customer_email', email);
+            localStorage.setItem('product_name', product.name);
+            localStorage.setItem('product_drive_link', product.driveLink);
+            localStorage.setItem('test_mode', 'true');
+
+            // Переходим на страницу успеха
+            window.location.href = 'success.html';
+        }
+
+        // Автофокус на поле email
+        document.getElementById('customerEmail').focus();
+    </script>
 </body>
 </html>
