@@ -1,25 +1,43 @@
-<link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css">
-<form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post">
-    
-    <!-- ТОВАР ДЛЯ ЧЕКА -->
-    <input type="hidden" name="orderDetails" value='{"items":[{"description":"Шпаргалка ПДД","quantity":"1","amount":{"value":"99.00","currency":"RUB"}}]}'>
-    
-    <!-- EMAIL ДЛЯ ЧЕКА -->
-    <div class="ym-customer-info">
-        <div class="ym-block-title">Email для чека</div>
-        <input name="cps_email" class="ym-input" placeholder="ваш@email.com" type="email" required>
-    </div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата - ПДД Шпаргалки</title>
+</head>
+<body>
+    <link rel="stylesheet" href="https://yookassa.ru/integration/simplepay/css/yookassa_construct_form.css?v=1.29.0">
+    <form class="yoomoney-payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post" accept-charset="utf-8">
 
-    <div class="ym-hidden-inputs">
-        <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
-        <input name="customerNumber" type="hidden" value="pdd_user">
-    </div>
+        <!-- ДОБАВЛЕНО: Email для чека (ОБЯЗАТЕЛЬНО) -->
+        <div class="ym-customer-info">
+            <div class="ym-block-title">Email для чека</div>
+            <input name="cps_email" class="ym-input" placeholder="ваш@email.com" type="email" required>
+        </div>
 
-    <div class="ym-payment-btn-block">
-        <input name="sum" value="99" type="hidden">
-        <button type="submit" class="ym-btn-pay">Заплатить 99 ₽</button>
-    </div>
-    
-    <input name="shopId" type="hidden" value="1194993">
-</form>
-<script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js"></script>
+        <!-- ДОБАВЛЕНО: Скрытые поля -->
+        <div class="ym-hidden-inputs">
+            <input name="shopSuccessURL" type="hidden" value="https://pddigfhufkrb.github.io/success.html">
+            <input name="customerNumber" type="hidden" value="pdd_customer">
+        </div>
+
+        <!-- ДОБАВЛЕНО: Товар для чека 54-ФЗ -->
+        <input type="hidden" name="orderDetails" value='{"items":[{"description":"Шпаргалка ПДД","quantity":"1","amount":{"value":"99.00","currency":"RUB"}}]}'>
+
+        <!-- ОРИГИНАЛЬНЫЙ КОД ЮKASSA -->
+        <div class="ym-payment-btn-block">
+            <div class="ym-input-icon-rub ym-display-none">
+                <input name="sum" placeholder="0.00" class="ym-input ym-sum-input ym-required-input" type="number" step="any" value="99">
+            </div>
+            <button data-text="Заплатить" class="ym-btn-pay ym-result-price">
+                <span class="ym-text-crop">Заплатить</span>
+                <span class="ym-price-output"> 99,00&nbsp;₽</span>
+            </button>
+            <img src="https://yookassa.ru/integration/simplepay/img/iokassa-gray.svg?v=1.29.0" class="ym-logo" width="114" height="27" alt="ЮKassa">
+        </div>
+        
+        <input name="shopId" type="hidden" value="1194993">
+    </form>
+    <script src="https://yookassa.ru/integration/simplepay/js/yookassa_construct_form.js?v=1.29.0"></script>
+</body>
+</html>
