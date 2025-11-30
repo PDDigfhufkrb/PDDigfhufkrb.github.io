@@ -3,68 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата успешна - Скачать шпаргалку</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Оплата успешна - ПДД Шпаргалки</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 600px;
+            margin-top: 50px;
+        }
+        .download-btn {
+            background: #28a745;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+        }
+        .auto-download {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 text-center">
-                <div class="alert alert-success">
-                    <h2>✅ Оплата прошла успешно!</h2>
-                    <p class="lead">Ваша шпаргалка готова к скачиванию</p>
-                </div>
-                
-                <div id="downloadSection"></div>
-                
-                <div class="mt-4">
-                    <a href="https://pddigfhufkrb.github.io/" class="btn btn-outline-primary">На главную</a>
-                </div>
+    <nav class="navbar navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                ← Назад к шпаргалкам
+            </a>
+            <span class="navbar-text">
+                📚 ПДД Шпаргалки
+            </span>
+        </div>
+    </nav>
+
+    <div class="container text-center my-5">
+        <div class="alert alert-success">
+            <h1>✅ Оплата прошла успешно!</h1>
+        </div>
+        
+        <p class="lead">Спасибо за покупку! Ваша шпаргалка готова к скачиванию.</p>
+        
+        <!-- Информация о товаре -->
+        <div id="productInfo" class="mb-4">
+            <!-- Сюда подставится название товара -->
+        </div>
+
+        <!-- Кнопка скачивания -->
+        <div class="my-4">
+            <button onclick="downloadPDF()" class="btn download-btn btn-lg">
+                📥 Скачать PDF
+            </button>
+        </div>
+
+        <!-- Автоскачивание -->
+        <div class="auto-download">
+            <p class="mb-2"><strong>Автоматическое скачивание</strong></p>
+            <div class="progress mb-2">
+                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" 
+                     style="width: 0%"></div>
             </div>
+            <p id="countdown" class="small text-muted">Скачивание начнется через 3 секунды...</p>
+        </div>
+
+        <p class="text-muted small">
+            Если возникли проблемы со скачиванием, свяжитесь с нами: <strong>example@pdd.ru</strong>
+        </p>
+
+        <div class="mt-4">
+            <a href="index.html" class="btn btn-outline-primary">Вернуться на главную</a>
         </div>
     </div>
 
+    <footer class="bg-light py-4 mt-5">
+        <div class="container text-center text-muted small">
+            <p>📧 example@pdd.ru</p>
+            <p class="mb-0"><a href="policy.html" class="text-muted">Политика конфиденциальности</a></p>
+        </div>
+    </footer>
+
     <script>
-        const productId = localStorage.getItem('product_id') || '1';
-        
-        const pdfLinks = {
-            '1': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_1',
-            '2': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_2',
-            '3': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_3',
-            '4': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_4',
-            '5': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_5',
-            '6': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_6',
-            '7': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_7',
-            '8': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_8',
-            '9': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_9',
-            '10': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_10',
-            '11': 'https://drive.google.com/uc?export=download&id=ВАШ_ID_11'
+        // Названия товаров для отображения
+        const productNames = {
+            '1': 'Основные понятия и термины',
+            '2': 'Обгон и опережение', 
+            '3': 'Остановка и стоянка',
+            '4': 'Проезд перекрестков',
+            '5': 'Скоростной режим',
+            '6': 'Действия при ДТП',
+            '7': 'Световые и звуковые сигналы',
+            '8': 'Пешеходные переходы',
+            '9': 'Начало движения и маневрирование',
+            '10': 'Железнодорожные переезды',
+            '11': 'Общие обязанности водителя'
         };
-        
-        const downloadSection = document.getElementById('downloadSection');
-        const pdfUrl = pdfLinks[productId];
-        
-        if (pdfUrl && pdfUrl.includes('ВАШ_ID')) {
-            downloadSection.innerHTML = `
-                <div class="alert alert-warning">
-                    <h4>Настройте ссылки для скачивания</h4>
-                    <p>Замените ВАШ_ID_X на реальные ID файлов из Google Drive</p>
-                </div>
-            `;
-        } else if (pdfUrl) {
-            downloadSection.innerHTML = `
-                <a href="${pdfUrl}" class="btn btn-success btn-lg" download>
-                    📥 Скачать PDF шпаргалку
-                </a>
-            `;
-        } else {
-            downloadSection.innerHTML = `
-                <div class="alert alert-danger">
-                    <h4>Ошибка</h4>
-                    <p>Товар не найден</p>
-                </div>
-            `;
+
+        // Реальные ссылки на PDF
+        const pdfFiles = {
+            '1': 'https://drive.google.com/file/d/1kYFSr6S_DGIE74yMo0v8EJMbH__r3O6D/view?usp=sharing',
+            '2': 'https://drive.google.com/file/d/1GoBl8agPglK6Y0MbYubxueeYqLCOU2Ze/view?usp=sharing',
+            '3': 'https://drive.google.com/file/d/1rhj9CIUO0TMuL0546bpgQSJQFeWRFs4s/view?usp=sharing',
+            '4': 'https://drive.google.com/file/d/1Hh4sdwf9Mc1BL6cErskcQ2_Xi46w02Ri/view?usp=sharing',
+            '5': 'https://drive.google.com/file/d/1W2VYr-yRUfeBCCLoLSvRIdxFcGG0GN9B/view?usp=sharing',
+            '6': 'https://drive.google.com/file/d/1gDCXI0B0wE9UI7MOb0MSE1dRPzZ4QQrc/view?usp=sharing',
+            '7': 'https://drive.google.com/file/d/12hShwoi5-5VVij3PPpu6WZdC_F2g3eqe/view?usp=sharing',
+            '8': 'https://drive.google.com/file/d/18nWk92JVQTWx9UMWGysQQVhAYT38fnZk/view?usp=sharing',
+            '9': 'https://drive.google.com/file/d/1-NXen5DEx00KKXCS2w8d3z0j-GAeCVRI/view?usp=sharing',
+            '10': 'https://drive.google.com/file/d/1PyAOC7ZanERh22lcO49wuT1saouBCxXe/view?usp=sharing',
+            '11': 'https://drive.google.com/file/d/1mNqgnOAnJFx69KMut87MMfxbjNPfZcDN/view?usp=sharing'
+        };
+
+        function getProductId() {
+            // 1. Пробуем из URL параметров (основной способ)
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Пробуем разные варианты параметров
+            let productId = urlParams.get('product_id') || 
+                           urlParams.get('product') || 
+                           urlParams.get('label');
+            
+            // Если product_id в формате pdd_X, извлекаем число
+            if (productId && productId.startsWith('pdd_')) {
+                productId = productId.replace('pdd_', '');
+            }
+            
+            if (productId && productId >= 1 && productId <= 11) {
+                console.log('Product ID from URL:', productId);
+                return productId;
+            }
+            
+            // 2. Пробуем из localStorage (резервный способ)
+            productId = localStorage.getItem('last_paid_product');
+            
+            if (productId) {
+                console.log('Product ID from localStorage:', productId);
+                localStorage.removeItem('last_paid_product');
+                return productId;
+            }
+            
+            // 3. Fallback - первый товар
+            console.log('Product ID fallback: 1');
+            return '1';
         }
+
+        function showProductInfo() {
+            const productId = getProductId();
+            const productInfo = document.getElementById('productInfo');
+            
+            if (productNames[productId]) {
+                productInfo.innerHTML = `
+                    <div class="alert alert-info">
+                        <strong>Ваша шпаргалка:</strong> ${productNames[productId]}
+                    </div>
+                `;
+            }
+        }
+
+        function downloadPDF() {
+            const productId = getProductId();
+            const pdfUrl = pdfFiles[productId];
+            
+            if (pdfUrl) {
+                // Открываем в новой вкладке
+                window.open(pdfUrl, '_blank');
+                
+                // Показываем сообщение об успехе
+                const productInfo = document.getElementById('productInfo');
+                productInfo.innerHTML += `
+                    <div class="alert alert-success mt-2">
+                        <strong>✅ Файл открыт!</strong> Если скачивание не началось автоматически, 
+                        нажмите на значок скачивания в правом верхнем углу Google Drive.
+                    </div>
+                `;
+            } else {
+                alert('Файл не найден. Свяжитесь с поддержкой: example@pdd.ru');
+            }
+        }
+
+        // Автоматическое скачивание с прогресс-баром
+        function startAutoDownload() {
+            let seconds = 3;
+            const progressBar = document.getElementById('progressBar');
+            const countdown = document.getElementById('countdown');
+            
+            const timer = setInterval(() => {
+                seconds--;
+                const progress = ((3 - seconds) / 3) * 100;
+                progressBar.style.width = progress + '%';
+                countdown.textContent = `Скачивание начнется через ${seconds} секунды...`;
+                
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    downloadPDF();
+                    countdown.textContent = 'Скачивание началось!';
+                    progressBar.style.width = '100%';
+                }
+            }, 1000);
+        }
+
+        // Показываем информацию о товаре и запускаем автоскачивание
+        document.addEventListener('DOMContentLoaded', function() {
+            showProductInfo();
+            startAutoDownload();
+        });
     </script>
 </body>
 </html>
