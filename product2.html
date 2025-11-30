@@ -24,9 +24,6 @@
             border-left: 4px solid #dc3545;
             background: #f8f9fa;
         }
-        .payment-form {
-            margin-bottom: 15px;
-        }
     </style>
 </head>
 <body>
@@ -69,12 +66,6 @@
                     <p>Обгон — единственный маневр, где вы выезжаете на полосу встречного движения. Ошибка стоит очень дорого. Эта шпаргалка научит оценивать риски и принимать правильные решения за доли секунды.</p>
                 </div>
 
-                <div class="alert alert-info">
-                    <strong>💡 Пример из шпаргалки:</strong><br>
-                    "Обгон запрещен на пешеходных переходах, железнодорожных переездах, в тоннелях, на мостах и в конце подъемов. Запомните: если видимость меньше 100 метров — обгонять нельзя!"
-                </div>
-            </div>
-
             <div class="col-lg-4">
                 <div class="card shadow">
                     <div class="card-body text-center">
@@ -82,18 +73,10 @@
                             <span class="h3 text-primary">99 ₽</span>
                         </div>
                         
-                        <!-- ПРЯМАЯ ФОРМА ЮKASSA -->
-                        <form class="payment-form" action="https://yookassa.ru/integration/simplepay/payment" method="post">
-                            <input type="hidden" name="shopId" value="1194993">
-                            <input type="hidden" name="sum" value="99">
-                            <input type="hidden" name="customerNumber" value="pdd_product_2">
-                            <input type="hidden" name="shopSuccessURL" value="https://pddigfhufkrb.github.io/success.html">
-                            <input type="hidden" name="cps_email" id="customerEmail" value="" required>
-                            
-                            <button type="submit" class="btn btn-success btn-lg w-100" onclick="return setEmail()">
-                                🛒 Купить за 99 ₽
-                            </button>
-                        </form>
+                        <!-- ПРОСТАЯ КНОПКА БЕЗ JavaScript -->
+                        <a href="payment.html?product=2&price=99" class="btn btn-success btn-lg w-100 mb-3">
+                            🛒 Купить эту шпаргалку
+                        </a>
                         
                         <small class="text-muted">
                             ✅ Мгновенная доставка<br>
@@ -120,7 +103,7 @@
                         <h6>🔄 Как это работает?</h6>
                         <ol class="small">
                             <li>Нажимаете "Купить"</li>
-                            <li>Вводите email для чека</li>
+                            <li>Переходите на страницу оплаты</li>
                             <li>Оплачиваете через ЮKassу</li>
                             <li>Сразу получаете PDF-файл</li>
                         </ol>
@@ -136,19 +119,5 @@
             <p class="mb-0"><a href="policy.html" class="text-muted">Политика конфиденциальности</a></p>
         </div>
     </footer>
-
-    <script>
-        function setEmail() {
-            const email = prompt('Введите email для отправки чека:');
-            if (email) {
-                document.getElementById('customerEmail').value = email;
-                return true; // форма отправляется
-            }
-            return false; // форма не отправляется
-        }
-
-        // Сохраняем product_id для success.html
-        localStorage.setItem('last_paid_product', '2');
-    </script>
 </body>
 </html>
