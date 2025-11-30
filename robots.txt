@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /payment.html
+
+Sitemap: https://pddigfhufkrb.github.io/sitemap.xml
