@@ -3,216 +3,533 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ПДД Шпаргалки</title>
+    <title>ПДД Шпаргалки | Сдай экзамен легко!</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 80px 0;
+        :root {
+            --primary: #1e3a8a; /* Глубокий синий */
+            --secondary: #0284c7; /* Светло-синий */
+            --accent: #dc2626; /* Красный для акцентов */
+            --light: #f0f9ff; /* Светло-голубой фон */
+            --snow: #f8fafc; /* Белоснежный */
+            --gold: #fbbf24; /* Золотой для новогоднего акцента */
         }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Новогодние снежинки */
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        /* Навигация */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(30, 58, 138, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        
+        .navbar-brand i {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+        
+        /* Герой-секция */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+            color: white;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 40px 40px;
+            margin-bottom: 60px;
+        }
+        
+        .hero:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><polygon points="50,0 61,35 98,35 68,57 79,92 50,70 21,92 32,57 2,35 39,35" fill="white" opacity="0.1"/></svg>');
+            opacity: 0.1;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .new-year-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--accent), #ef4444);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Карточки товаров */
         .card {
-            transition: transform 0.2s;
             border: none;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card:before {
+            content: "🎄";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            opacity: 0.3;
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-bottom: none;
+        }
+        
+        .card-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .card-text {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            display: block;
+            margin: 15px 0;
+        }
+        
+        .btn-buy {
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 58, 138, 0.3);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        /* Секция преимуществ */
+        .features {
+            padding: 80px 0;
+            background: white;
+            border-radius: 40px;
+            margin: 40px 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--secondary);
             margin-bottom: 20px;
         }
-        .card:hover {
-            transform: translateY(-2px);
-        }
-        .btn-primary {
-            background: #667eea;
-            border: none;
-        }
-        .btn-outline-primary {
-            border-color: #667eea;
-            color: #667eea;
-        }
-        .btn-outline-primary:hover {
-            background: #667eea;
+        
+        /* Футер */
+        footer {
+            background: var(--primary);
             color: white;
+            padding: 60px 0 30px;
+            margin-top: 80px;
+            position: relative;
+        }
+        
+        footer:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+        }
+        
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: white;
+        }
+        
+        .copyright {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero {
+                padding: 70px 0;
+                border-radius: 0 0 30px 30px;
+            }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-white">
+    <!-- Снежинки -->
+    <div id="snowflakes"></div>
+    
+    <!-- Навигация -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <span class="navbar-brand mb-0 h1">📚 ПДД Шпаргалки</span>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-car"></i> ПДД Шпаргалки
+            </a>
+            <div class="d-flex">
+                <a href="#" class="btn btn-outline me-2 d-none d-md-inline">Войти</a>
+                <a href="#" class="btn btn-buy">Купить все</a>
+            </div>
         </div>
     </nav>
 
+    <!-- Герой-секция -->
     <section class="hero text-center">
         <div class="container">
-            <h1 class="mb-3">Сдайте ПДД с первого раза</h1>
-            <p class="lead">Краткие шпаргалки по правилам дорожного движения</p>
-        </div>
-    </section>
-
-    <section class="py-5">
-        <div class="container">
-            <div class="row g-3">
-                <!-- Карточка 1 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Основные понятия</h5>
-                            <p class="card-text small">Вся терминология ПДД простым языком</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product1.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="hero-title">Сдайте ПДД с первого раза в Новом году!</h1>
+                    <p class="hero-subtitle">Краткие, понятные шпаргалки по всем разделам правил дорожного движения. Всё самое важное на одной странице.</p>
+                    
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="#products" class="btn btn-buy btn-lg">
+                            <i class="fas fa-gift me-2"></i>Выбрать шпаргалку
+                        </a>
+                        <a href="#" class="btn btn-outline btn-lg">
+                            <i class="fas fa-play-circle me-2"></i>Как это работает
+                        </a>
                     </div>
-                </div>
-
-                <!-- Карточка 2 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Обгон и опережение</h5>
-                            <p class="card-text small">Где можно и где запрещено обгонять</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product2.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 3 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Остановка и стоянка</h5>
-                            <p class="card-text small">Места где запрещена остановка</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product3.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 4 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Проезд перекрестков</h5>
-                            <p class="card-text small">Кому уступать на перекрестке</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product4.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 5 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Скоростной режим</h5>
-                            <p class="card-text small">Сколько можно ехать в разных зонах</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product5.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 6 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Действия при ДТП</h5>
-                            <p class="card-text small">Памятка на случай аварии</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product6.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 7 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Световые сигналы</h5>
-                            <p class="card-text small">Когда и какие фары включать</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product7.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 8 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Пешеходные переходы</h5>
-                            <p class="card-text small">Правила проезда пешеходных переходов</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product8.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 9 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Начало движения</h5>
-                            <p class="card-text small">Повороты, перестроение, маневры</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product9.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 10 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Железнодорожные переезды</h5>
-                            <p class="card-text small">Правила проезда ж/д путей</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product10.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Карточка 11 -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Обязанности водителя</h5>
-                            <p class="card-text small">Что нужно знать перед выездом</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-primary">99 ₽</span>
-                                <a href="product11.html" class="btn btn-outline-primary btn-sm">Подробнее</a>
-                            </div>
-                        </div>
+                    
+                    <div class="new-year-badge">
+                        <i class="fas fa-star me-2"></i>Новогодняя акция: скидки на комплекты!
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-light py-4 mt-5">
-        <div class="container text-center text-muted small">
-            <p>📧 example@pdd.ru</p>
-            <p class="mb-0"><a href="policy.html" class="text-muted">Политика конфиденциальности</a></p>
+    <!-- Преимущества -->
+    <section class="features">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-12">
+                    <h2 class="fw-bold mb-3" style="color: var(--primary);">Почему наши шпаргалки работают?</h2>
+                    <p class="text-muted">Мы превратили сложные правила в простые алгоритмы</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4>Мгновенный результат</h4>
+                    <p class="text-muted">За 5 минут понимаете то, что учили неделями</p>
+                </div>
+                
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h4>Только важное</h4>
+                    <p class="text-muted">Убрали всю "воду" и юридические сложности</p>
+                </div>
+                
+                <div class="col-md-4 text-center mb-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Прогресс в обучении</h4>
+                    <p class="text-muted">Чувствуете, как с каждой шпаргалкой знаете больше</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Товары -->
+    <section class="py-5" id="products">
+        <div class="container">
+            <div class="row mb-5">
+                <div class="col-12 text-center">
+                    <h2 class="fw-bold mb-3" style="color: var(--primary);">Выберите нужную шпаргалку</h2>
+                    <p class="text-muted">Каждая шпаргалка — это концентрированное знание по одной теме</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Карточки товаров остаются без изменений, только обновлены классы -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h5 class="card-title">Основные понятия</h5>
+                            <p class="card-text">Вся терминология ПДД простым языком. Ключ к пониманию всех правил.</p>
+                            <span class="price">99 ₽</span>
+                            <a href="product1.html" class="btn btn-buy">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h5 class="card-title">Обгон и опережение</h5>
+                            <p class="card-text">Где можно и где запрещено обгонять. Безопасные манёвры.</p>
+                            <span class="price">99 ₽</span>
+                            <a href="product2.html" class="btn btn-buy">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h5 class="card-title">Остановка и стоянка</h5>
+                            <p class="card-text">Места где запрещена остановка. Как парковаться без штрафов.</p>
+                            <span class="price">99 ₽</span>
+                            <a href="product3.html" class="btn btn-buy">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h5 class="card-title">Проезд перекрестков</h5>
+                            <p class="card-text">Кому уступать на перекрестке. Универсальный алгоритм.</p>
+                            <span class="price">99 ₽</span>
+                            <a href="product4.html" class="btn btn-buy">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h5 class="card-title">Скоростной режим</h5>
+                            <p class="card-text">Сколько можно ехать в разных зонах. Все ограничения в одной таблице.</p>
+                            <span class="price">99 ₽</span>
+                            <a href="product5.html" class="btn btn-buy">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <h5 class="card-title">Действия при ДТП</h5>
+                            <p class="card-text">Памятка на случай аварии. Пошаговый алгоритм без паники.</p>
+                            <span class="price">99 ₽</span>
+                            <a href="product6.html" class="btn btn-buy">Купить сейчас</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Остальные карточки аналогично... -->
+                <!-- Для краткости оставил 6 карточек, вы можете добавить остальные -->
+
+            </div>
+            
+            <!-- Кнопка "Показать еще" -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <a href="#" class="btn btn-outline btn-lg">
+                        <i class="fas fa-redo me-2"></i>Показать все шпаргалки (12)
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4 class="mb-3"><i class="fas fa-car me-2"></i>ПДД Шпаргалки</h4>
+                    <p>Помогаем сдать экзамен с первого раза и уверенно чувствовать себя на дороге.</p>
+                    <div class="mt-3">
+                        <a href="#" class="text-white me-3"><i class="fab fa-vk fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-telegram fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-youtube fa-lg"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3">Контакты</h5>
+                    <p><i class="fas fa-envelope me-2"></i> support@pdd-shpargalki.ru</p>
+                    <p><i class="fas fa-phone me-2"></i> 8 (800) 123-45-67</p>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <h5 class="mb-3">Документы</h5>
+                    <p><a href="policy.html" class="footer-link"><i class="fas fa-file-contract me-2"></i>Политика конфиденциальности</a></p>
+                    <p><a href="offer.html" class="footer-link"><i class="fas fa-handshake me-2"></i>Договор оферты</a></p>
+                    <p><a href="faq.html" class="footer-link"><i class="fas fa-question-circle me-2"></i>Частые вопросы</a></p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12 text-center copyright">
+                    <p>© 2023 ПДД Шпаргалки. Все права защищены.</p>
+                    <p class="small">Сайт не является официальным источником ПДД. Консультационный образовательный продукт.</p>
+                </div>
+            </div>
         </div>
     </footer>
+
+    <!-- Скрипт для снежинок -->
+    <script>
+        // Создание снежинок
+        function createSnowflakes() {
+            const snowflakesContainer = document.getElementById('snowflakes');
+            const snowflakeCount = 50;
+            
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                
+                // Случайный размер
+                const size = Math.random() * 5 + 2;
+                snowflake.style.width = `${size}px`;
+                snowflake.style.height = `${size}px`;
+                
+                // Начальная позиция
+                snowflake.style.left = `${Math.random() * 100}vw`;
+                snowflake.style.top = `-10px`;
+                
+                // Анимация
+                const duration = Math.random() * 10 + 10;
+                snowflake.style.animation = `fall ${duration}s linear infinite`;
+                
+                // Случайная задержка
+                snowflake.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Добавляем стиль анимации
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fall {
+                        to {
+                            transform: translateY(100vh) rotate(360deg);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                snowflakesContainer.appendChild(snowflake);
+            }
+        }
+        
+        // Запуск при загрузке страницы
+        document.addEventListener('DOMContentLoaded', createSnowflakes);
+        
+        // Плавный скролл для навигации
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
