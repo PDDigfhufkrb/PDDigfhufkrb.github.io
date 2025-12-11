@@ -7,111 +7,96 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Новогодняя тема */
+        /* Профессиональная цветовая схема */
         :root {
-            --new-year-red: #c53030;
-            --new-year-green: #065f46;
-            --new-year-gold: #d97706;
-            --new-year-blue: #1e40af;
+            --primary-blue: #1e40af;
+            --primary-dark: #1e3a8a;
+            --accent-red: #dc2626;
+            --light-bg: #f8fafc;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #fef3c7 100%);
+            background: var(--light-bg);
             min-height: 100vh;
             position: relative;
         }
         
-        /* Новогодние снежинки (очень легкие) */
-        .snowflake {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0.7;
-            pointer-events: none;
-            z-index: 0;
+        /* Крутая анимация карточек - точно работает */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        /* Навигация - минимальные изменения */
+        .card {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            animation-delay: calc(var(--card-index) * 0.1s);
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-blue);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.15);
+            border-left-color: var(--accent-red);
+        }
+        
+        /* Навигация */
         .navbar {
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-bottom: 2px solid var(--new-year-red);
+            border-bottom: 2px solid var(--primary-blue);
         }
         
         .navbar-brand {
             font-weight: 700;
-            color: var(--new-year-blue);
+            color: var(--primary-dark);
             font-size: 1.4rem;
         }
         
-        /* Герой секция с новогодним акцентом */
+        /* Герой секция */
         .hero {
-            background: linear-gradient(135deg, var(--new-year-blue) 0%, #1e3a8a 100%);
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
             color: white;
             padding: 80px 0;
             position: relative;
             overflow: hidden;
         }
         
-        .hero:before {
-            content: "❄️";
-            position: absolute;
-            font-size: 10rem;
-            opacity: 0.05;
-            right: 10%;
-            top: 50%;
-            transform: translateY(-50%);
+        /* Анимация для заголовка */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
         }
         
         .hero h1 {
             font-weight: 800;
             margin-bottom: 1rem;
-            position: relative;
-        }
-        
-        .hero h1:after {
-            content: "🎄";
-            position: absolute;
-            font-size: 2rem;
-            top: -15px;
-            right: -40px;
-        }
-        
-        .new-year-badge {
-            display: inline-block;
-            background: var(--new-year-red);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-top: 15px;
-            border: 2px solid white;
-        }
-        
-        /* Карточки - улучшенный дизайн */
-        .card {
-            transition: all 0.3s ease;
-            border: none;
-            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-            border-top: 4px solid var(--new-year-blue);
-            position: relative;
-            z-index: 1;
+            white-space: nowrap;
+            animation: typing 2s steps(40, end);
         }
         
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-            border-top-color: var(--new-year-red);
+        .hero p.lead {
+            animation: fadeInUp 1s ease-out 0.5s both;
         }
         
+        /* Карточки */
         .card-title {
             font-weight: 700;
-            color: var(--new-year-blue);
+            color: var(--primary-dark);
             margin-bottom: 10px;
         }
         
@@ -122,25 +107,10 @@
             min-height: 40px;
         }
         
-        /* Кнопки - улучшенный стиль */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--new-year-blue) 0%, #1e3a8a 100%);
-            border: none;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--new-year-red) 0%, #c53030 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(197, 48, 48, 0.2);
-        }
-        
+        /* Кнопки */
         .btn-outline-primary {
-            border-color: var(--new-year-blue);
-            color: var(--new-year-blue);
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
             padding: 8px 20px;
             border-radius: 8px;
             font-weight: 600;
@@ -148,52 +118,52 @@
         }
         
         .btn-outline-primary:hover {
-            background: var(--new-year-blue);
+            background: var(--primary-blue);
             color: white;
             transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.2);
         }
         
-        /* Цена - улучшенный стиль */
+        /* Цена */
         .price {
             font-weight: 800;
-            color: var(--new-year-red);
+            color: var(--accent-red);
             font-size: 1.3rem;
         }
         
-        /* Футер с новогодним акцентом */
+        /* Футер */
         footer {
-            background: var(--new-year-blue);
+            background: var(--primary-dark);
             color: white;
             padding: 40px 0 20px;
             margin-top: 60px;
-            position: relative;
-        }
-        
-        footer:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--new-year-red), var(--new-year-gold), var(--new-year-green));
         }
         
         .footer-link {
             color: rgba(255,255,255,0.8);
             text-decoration: none;
+            transition: color 0.3s ease;
         }
         
         .footer-link:hover {
             color: white;
         }
+        
+        /* Плавное появление элементов при прокрутке */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
-    <!-- Снежинки (легкий фон) -->
-    <div id="snowflakes"></div>
-    
-    <!-- Навигация (практически без изменений) -->
+    <!-- Навигация -->
     <nav class="navbar navbar-light">
         <div class="container">
             <span class="navbar-brand mb-0 h1">📚 ПДД Шпаргалки</span>
@@ -205,19 +175,16 @@
         <div class="container">
             <h1 class="mb-3">Сдайте ПДД с первого раза</h1>
             <p class="lead">Краткие шпаргалки по правилам дорожного движения</p>
-            <div class="new-year-badge">
-                🎁 Новогодние скидки до 31 декабря
-            </div>
         </div>
     </section>
 
-    <!-- Основной контент - структура без изменений -->
+    <!-- Основной контент -->
     <section class="py-5">
         <div class="container">
             <div class="row g-3">
-                <!-- Карточка 1 -->
+                <!-- Карточки с задержками анимации -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 1;">
                         <div class="card-body">
                             <h5 class="card-title">Основные понятия</h5>
                             <p class="card-text small">Вся терминология ПДД простым языком</p>
@@ -229,9 +196,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 2 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 2;">
                         <div class="card-body">
                             <h5 class="card-title">Обгон и опережение</h5>
                             <p class="card-text small">Где можно и где запрещено обгонять</p>
@@ -243,9 +209,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 3 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 3;">
                         <div class="card-body">
                             <h5 class="card-title">Остановка и стоянка</h5>
                             <p class="card-text small">Места где запрещена остановка</p>
@@ -257,9 +222,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 4 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 4;">
                         <div class="card-body">
                             <h5 class="card-title">Проезд перекрестков</h5>
                             <p class="card-text small">Кому уступать на перекрестке</p>
@@ -271,9 +235,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 5 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 5;">
                         <div class="card-body">
                             <h5 class="card-title">Скоростной режим</h5>
                             <p class="card-text small">Сколько можно ехать в разных зонах</p>
@@ -285,9 +248,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 6 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 6;">
                         <div class="card-body">
                             <h5 class="card-title">Действия при ДТП</h5>
                             <p class="card-text small">Памятка на случай аварии</p>
@@ -299,9 +261,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 7 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 7;">
                         <div class="card-body">
                             <h5 class="card-title">Световые сигналы</h5>
                             <p class="card-text small">Когда и какие фары включать</p>
@@ -313,9 +274,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 8 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 8;">
                         <div class="card-body">
                             <h5 class="card-title">Пешеходные переходы</h5>
                             <p class="card-text small">Правила проезда пешеходных переходов</p>
@@ -327,9 +287,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 9 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 9;">
                         <div class="card-body">
                             <h5 class="card-title">Начало движения</h5>
                             <p class="card-text small">Повороты, перестроение, маневры</p>
@@ -341,9 +300,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 10 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 10;">
                         <div class="card-body">
                             <h5 class="card-title">Железнодорожные переезды</h5>
                             <p class="card-text small">Правила проезда ж/д путей</p>
@@ -355,9 +313,8 @@
                     </div>
                 </div>
 
-                <!-- Карточка 11 -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100">
+                    <div class="card h-100" style="--card-index: 11;">
                         <div class="card-body">
                             <h5 class="card-title">Обязанности водителя</h5>
                             <p class="card-text small">Что нужно знать перед выездом</p>
@@ -369,13 +326,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Кнопка "Купить все" (добавил как дополнительный элемент) -->
-            <div class="text-center mt-5">
-                <a href="#" class="btn btn-primary">
-                    <i class="fas fa-gift me-2"></i>Купить все шпаргалки со скидкой 30%
-                </a>
-            </div>
         </div>
     </section>
 
@@ -384,57 +334,55 @@
         <div class="container text-center">
             <p class="mb-2">📧 example@pdd.ru</p>
             <p class="mb-0">
-                <a href="policy.html" class="footer-link">Политика конфиденциальности</a> | 
-                <a href="offer.html" class="footer-link">Договор оферты</a>
+                <a href="policy.html" class="footer-link">Политика конфиденциальности</a>
             </p>
-            <p class="small mt-3" style="opacity: 0.7;">© 2023 ПДД Шпаргалки. Новогоднее обновление 🎅</p>
+            <p class="small mt-3" style="opacity: 0.7;">© 2025 ПДД Шпаргалки</p>
         </div>
     </footer>
 
-    <!-- Скрипт для снежинок -->
+    <!-- Скрипт для анимации при прокрутке -->
     <script>
-        // Простые снежинки на заднем плане
-        function createSnowflakes() {
-            const container = document.getElementById('snowflakes');
-            const count = 30;
+        // Анимация при прокрутке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Анимация карточек уже работает через CSS
             
-            for (let i = 0; i < count; i++) {
-                const flake = document.createElement('div');
-                flake.className = 'snowflake';
+            // Простая анимация при скролле для других элементов
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            // Наблюдаем за всеми карточками
+            document.querySelectorAll('.card').forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Анимация цены при наведении на карточку
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const price = this.querySelector('.price');
+                    if (price) {
+                        price.style.transform = 'scale(1.1)';
+                        price.style.transition = 'transform 0.3s ease';
+                    }
+                });
                 
-                // Случайный размер и позиция
-                const size = Math.random() * 4 + 2;
-                flake.style.width = size + 'px';
-                flake.style.height = size + 'px';
-                flake.style.left = Math.random() * 100 + 'vw';
-                flake.style.top = '-10px';
-                
-                // Анимация
-                const duration = Math.random() * 10 + 10;
-                flake.style.animation = `fall ${duration}s linear infinite`;
-                flake.style.animationDelay = Math.random() * 5 + 's';
-                
-                // Добавляем стиль анимации
-                if (!document.querySelector('#snow-animation')) {
-                    const style = document.createElement('style');
-                    style.id = 'snow-animation';
-                    style.textContent = `
-                        @keyframes fall {
-                            to {
-                                transform: translateY(100vh) rotate(360deg);
-                                opacity: 0;
-                            }
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
-                
-                container.appendChild(flake);
-            }
-        }
-        
-        // Запускаем при загрузке
-        document.addEventListener('DOMContentLoaded', createSnowflakes);
+                card.addEventListener('mouseleave', function() {
+                    const price = this.querySelector('.price');
+                    if (price) {
+                        price.style.transform = 'scale(1)';
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
