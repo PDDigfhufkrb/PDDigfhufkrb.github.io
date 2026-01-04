@@ -3,16 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ПДД Шпаргалки</title>
+    <title>ПДД Шпаргалки | Сдай экзамен легко!</title>
+    
+    <!-- Яндекс.Метрика -->
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+
+        ym(106112525, 'init', {
+            ssr:true,
+            webvisor:true,
+            clickmap:true,
+            ecommerce:"dataLayer",
+            accurateTrackBounce:true,
+            trackLinks:true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/106112525" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+    
+    <!-- CSS и стили -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Favicon -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32">
     <link rel="icon" href="favicon-16x16.png" type="image/png" sizes="16x16">
     
+    <!-- Основные стили -->
     <style>
-        /* Профессиональная цветовая схема */
         :root {
             --primary-blue: #1e40af;
             --primary-dark: #1e3a8a;
@@ -20,7 +45,49 @@
             --light-bg: #f8fafc;
         }
         
-        /* Крутая анимация карточек - точно работает */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Верхнее изображение дороги */
+        .road-header {
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .road-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7) saturate(1.2);
+        }
+        
+        .road-header .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(30, 58, 138, 0.3), rgba(30, 58, 138, 0.7));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .road-header h2 {
+            color: white;
+            font-weight: 700;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        
+        /* Анимация карточек */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -51,7 +118,6 @@
             border-left-color: var(--accent-red);
         }
         
-        /* Навигация */
         .navbar {
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -64,16 +130,14 @@
             font-size: 1.4rem;
         }
         
-        /* Герой секция */
         .hero {
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 80px 0;
+            padding: 60px 0;
             position: relative;
             overflow: hidden;
         }
         
-        /* Анимация для заголовка */
         @keyframes typing {
             from { width: 0 }
             to { width: 100% }
@@ -91,7 +155,6 @@
             animation: fadeInUp 1s ease-out 0.5s both;
         }
         
-        /* Карточки */
         .card-title {
             font-weight: 700;
             color: var(--primary-dark);
@@ -105,7 +168,6 @@
             min-height: 40px;
         }
         
-        /* Кнопки */
         .btn-outline-primary {
             border-color: var(--primary-blue);
             color: var(--primary-blue);
@@ -122,14 +184,12 @@
             box-shadow: 0 5px 15px rgba(30, 64, 175, 0.2);
         }
         
-        /* Цена */
         .price {
             font-weight: 800;
             color: var(--accent-red);
             font-size: 1.3rem;
         }
         
-        /* Футер */
         footer {
             background: var(--primary-dark);
             color: white;
@@ -147,7 +207,6 @@
             color: white;
         }
         
-        /* Плавное появление элементов при прокрутке */
         .fade-in {
             opacity: 0;
             transform: translateY(20px);
@@ -158,6 +217,24 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        @media (max-width: 768px) {
+            .road-header {
+                height: 140px;
+            }
+            
+            .road-header h2 {
+                font-size: 1.8rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero {
+                padding: 50px 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -167,6 +244,14 @@
             <span class="navbar-brand mb-0 h1">📚 ПДД Шпаргалки</span>
         </div>
     </nav>
+
+    <!-- Верхнее изображение дороги -->
+    <div class="road-header">
+        <img src="https://s6.iimage.su/s/04/gzUHn8hx9Yaj4dCKuUnFOdGeSGynfOAa9bGbmOZz.jpg" alt="Дорога" loading="lazy">
+        <div class="overlay">
+            <h2>Просто о сложном</h2>
+        </div>
+    </div>
 
     <!-- Герой секция -->
     <section class="hero text-center">
@@ -180,7 +265,7 @@
     <section class="py-5">
         <div class="container">
             <div class="row g-3">
-                <!-- Карточки с задержками анимации -->
+                <!-- Карточка 1 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 1;">
                         <div class="card-body">
@@ -194,6 +279,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 2 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 2;">
                         <div class="card-body">
@@ -207,6 +293,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 3 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 3;">
                         <div class="card-body">
@@ -220,6 +307,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 4 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 4;">
                         <div class="card-body">
@@ -233,6 +321,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 5 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 5;">
                         <div class="card-body">
@@ -246,6 +335,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 6 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 6;">
                         <div class="card-body">
@@ -259,6 +349,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 7 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 7;">
                         <div class="card-body">
@@ -272,6 +363,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 8 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 8;">
                         <div class="card-body">
@@ -285,6 +377,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 9 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 9;">
                         <div class="card-body">
@@ -298,6 +391,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 10 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 10;">
                         <div class="card-body">
@@ -311,6 +405,7 @@
                     </div>
                 </div>
 
+                <!-- Карточка 11 -->
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100" style="--card-index: 11;">
                         <div class="card-body">
@@ -340,11 +435,8 @@
 
     <!-- Скрипт для анимации при прокрутке -->
     <script>
-        // Анимация при прокрутке
         document.addEventListener('DOMContentLoaded', function() {
-            // Анимация карточек уже работает через CSS
-            
-            // Простая анимация при скролле для других элементов
+            // Анимация при скролле
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -50px 0px'
@@ -358,12 +450,11 @@
                 });
             }, observerOptions);
             
-            // Наблюдаем за всеми карточками
             document.querySelectorAll('.card').forEach(card => {
                 observer.observe(card);
             });
             
-            // Анимация цены при наведении на карточку
+            // Анимация цены при наведении
             document.querySelectorAll('.card').forEach(card => {
                 card.addEventListener('mouseenter', function() {
                     const price = this.querySelector('.price');
